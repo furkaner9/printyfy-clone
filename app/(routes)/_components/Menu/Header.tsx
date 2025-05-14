@@ -1,16 +1,18 @@
-import { Menu, MenuIcon } from "lucide-react";
+import { Menu, MenuIcon, User } from "lucide-react";
 import React from "react";
 import Image from "next/image";
 import { routes } from "@/app/contains";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import MobileMenu from "./MobileMenu";
+import UserMenu from "./UserMenu";
 
 const Header = () => {
   return (
-    <div className="h-16 shadow-md bg-mycolor-2 w-full fixed z- z-50">
+    <div className="h-16 shadow-md bg-mycolor-2 w-full fixed  z-50">
       <div className="container mx-auto flex flex-row items-center justify-between p-3">
         <div className="lg:hidden flex items-center">
-          <MenuIcon />
+          <MobileMenu />
         </div>
         <div className="flex items-center mr-auto">
           <Link href="/">
@@ -30,14 +32,7 @@ const Header = () => {
             </Link>
           ))}
         </nav>
-        <div className="space-x-4">
-          <Link href="/login">
-            <Button variant={"mybutton"}>Login</Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="default">Sign Up</Button>
-          </Link>
-        </div>
+        <UserMenu />
       </div>
     </div>
   );
