@@ -1,0 +1,83 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum PhoneModel{
+  iphonex
+  iphone11
+  iphone12
+  iphone13
+  iphone14
+  iphone15
+}
+
+enum CaseMaterial{
+  silicone
+  policarbonate
+}
+
+enum CaseFinish {
+  smooth
+  textured
+}
+
+enum CaseColor{
+  black
+  blue
+  rose
+
+}
+
+enum TshirtSize{
+  small
+  medium
+  large
+  xlarge
+}
+
+enum TshirtColor {
+  white
+  black
+  red
+  blue
+  green
+}
+
+enum MugColor{
+  white
+  black
+  red
+  blue
+  green
+}
+
+enum ProductType {
+  phoneCase
+  tshirt
+  mug 
+}
+
+model Configuration {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  type             ProductType?
+
+  imageUrl         String
+  caseColor        CaseColor?
+  caseModel        PhoneModel?
+  caseMaterial     CaseMaterial?
+  caseFinish       CaseFinish?
+  size             TshirtSize?
+  tshirtcolor      TshirtColor?
+  mugColor         MugColor?
+  croppedImageUrl  String?
+
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
