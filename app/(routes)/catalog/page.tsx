@@ -49,7 +49,7 @@ const CatalogPage = () => {
             "ring-blue-900/25 bg-blue-900/10": isDragOver,
           }
         )}
-      ></div>
+      >
       <div className="relative flex flex-1 flex-col items-center justify-center w-full">
         <Dropzone
           onDropAccepted={onDropAccepted}
@@ -105,6 +105,7 @@ const CatalogPage = () => {
           )}
         </Dropzone>
       </div>
+    </div>
     </div>
   );
 };

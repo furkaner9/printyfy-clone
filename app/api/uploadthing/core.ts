@@ -1,5 +1,4 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 import sharp from "sharp";
 import { prismadb } from "@/lib/prismadb";
@@ -21,17 +20,16 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       const { configId } = metadata.input;
-      const res = await fetch(file.url);
+      const res = await fetch(file.ufsUrl); // Değişiklik yapıldı
       const buffer = await res.arrayBuffer();
 
       const imgMetadata = await sharp(buffer).metadata();
-
       const { width, height } = imgMetadata;
 
       if (configId) {
         const configration = await prismadb.configuration.create({
           data: {
-            imageUrl: file.url,
+            imageUrl: file.ufsUrl, // Değişiklik yapıldı
             width: width || 500,
             height: height || 500,
           },
@@ -43,7 +41,7 @@ export const ourFileRouter = {
             id: configId,
           },
           data: {
-            croppedImageUrl: file.url,
+            croppedImageUrl: file.ufsUrl, // Değişiklik yapıldı
           },
         });
         return { configId: updateConfigration.id };
