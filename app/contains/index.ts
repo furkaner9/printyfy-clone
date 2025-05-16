@@ -59,3 +59,31 @@ export const services: ServiceProps[] = [
       "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in .",
   },
 ];
+
+type ProductType = {
+  id: number;
+  image: string;
+  title: string;
+  href: string;
+};
+
+export const products: ProductType[] = [
+  {
+    id: 1,
+    image: "/product/1.png",
+    title: "Phone",
+    href: "phone",
+  },
+  {
+    id: 2,
+    image: "/product/2.png",
+    title: "T-shirt",
+    href: "tshirt",
+  },
+  {
+    id: 3,
+    image: "/product/3.png",
+    title: "Mug",
+    href: "mug",
+  },
+];
