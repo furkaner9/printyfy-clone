@@ -20,32 +20,40 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       const { configId } = metadata.input;
-      const res = await fetch(file.ufsUrl); // Değişiklik yapıldı
+      const res = await fetch(file.ufsUrl);
       const buffer = await res.arrayBuffer();
 
       const imgMetadata = await sharp(buffer).metadata();
       const { width, height } = imgMetadata;
 
-      if (configId) {
+      let newConfigId = configId;
+
+      if (!configId) {
+        // Eğer `configId` yoksa yeni bir konfigürasyon oluştur
         const configration = await prismadb.configuration.create({
           data: {
-            imageUrl: file.ufsUrl, // Değişiklik yapıldı
+            imageUrl: file.ufsUrl,
             width: width || 500,
             height: height || 500,
           },
         });
-        return { configId: configration.id };
+
+        newConfigId = configration.id;
       } else {
-        const updateConfigration = await prismadb.configuration.update({
+        // Eğer `configId` varsa mevcut kaydı güncelle
+        await prismadb.configuration.update({
           where: {
             id: configId,
           },
           data: {
-            croppedImageUrl: file.ufsUrl, // Değişiklik yapıldı
+            croppedImageUrl: file.ufsUrl,
           },
         });
-        return { configId: updateConfigration.id };
       }
+
+      console.log("Config ID:", newConfigId);
+
+      return { configId: newConfigId };
     }),
 } satisfies FileRouter;
 

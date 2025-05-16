@@ -8,9 +8,10 @@ interface RoutesLayoutProps {
 
 const RoutesLayout = ({ children }: RoutesLayoutProps) => {
   return (
-    <div className="flex flex-col min-h-screen pt-16">
+    <div className="flex flex-col min-h-screen ">
       <Header />
-      <main className="flex-grow">{children}</main>
+
+      <main className="flex-grow pt-16">{children}</main>
       <Footer />
     </div>
   );

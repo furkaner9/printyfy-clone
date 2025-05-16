@@ -9,8 +9,8 @@ import UserMenu from "./UserMenu";
 
 const Header = () => {
   return (
-    <div className="h-16 shadow-md bg-mycolor-2 w-full fixed  z-50">
-      <div className="container mx-auto flex flex-row items-center justify-between p-3">
+    <div className="h-16 shadow-md bg-mycolor2 w-full fixed z-50">
+      <div className="container mx-auto flex flex-row items-center justify-between p-2">
         <div className="lg:hidden flex items-center">
           <MobileMenu />
         </div>
@@ -21,7 +21,7 @@ const Header = () => {
               alt="logo"
               width={512}
               height={120}
-              className="h-10 w-auto"
+              className="h-8 w-auto"
             />
           </Link>
         </div>

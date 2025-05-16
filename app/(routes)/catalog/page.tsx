@@ -50,62 +50,62 @@ const CatalogPage = () => {
           }
         )}
       >
-      <div className="relative flex flex-1 flex-col items-center justify-center w-full">
-        <Dropzone
-          onDropAccepted={onDropAccepted}
-          onDropRejected={onDropRejected}
-          accept={{
-            "image/png": [".png"],
-            "image/jpeg": [".jpeg"],
-            "image/jpg": [".jpg"],
-          }}
-          onDragEnter={() => setIsDragOver(true)}
-        >
-          {({ getRootProps, getInputProps }) => (
-            <div
-              className="h-full w-full flex flex-col items-center justify-center"
-              {...getRootProps()}
-            >
-              <input {...getInputProps()} />
+        <div className="relative flex flex-1 flex-col items-center justify-center w-full">
+          <Dropzone
+            onDropAccepted={onDropAccepted}
+            onDropRejected={onDropRejected}
+            accept={{
+              "image/png": [".png"],
+              "image/jpeg": [".jpeg"],
+              "image/jpg": [".jpg"],
+            }}
+            onDragEnter={() => setIsDragOver(true)}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <div
+                className="h-full w-full flex flex-col items-center justify-center"
+                {...getRootProps()}
+              >
+                <input {...getInputProps()} />
 
-              {isDragOver ? (
-                <MousePointerSquareDashed className="h-6 text-zinc-500 mb-2" />
-              ) : isUploading || isPending ? (
-                <Loader2 className="animate-spin h-6 w-6 text-zinc-500 mb-2" />
-              ) : (
-                <ImageIcon
-                  className="h-6 w-6 text-zinc-500
-                 mb-2"
-                />
-              )}
-              <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
-                {isUploading ? (
-                  <div className="flex flex-col items-center">
-                    <p>Uploading</p>
-                    <Progress
-                      value={uploadprogress}
-                      className="mt-4 w-44 bg-gray-400"
-                    />
-                  </div>
-                ) : isPending ? (
-                  <div className="flex flex-col items-center">
-                    <p>Redirecting plase wait</p>
-                  </div>
-                ) : isDragOver ? (
-                  <div className="flex flex-col items-center">
-                    <p>Drop File</p>
-                  </div>
+                {isDragOver ? (
+                  <MousePointerSquareDashed className="h-6 text-zinc-500 mb-2" />
+                ) : isUploading || isPending ? (
+                  <Loader2 className="animate-spin h-6 w-6 text-zinc-500 mb-2" />
                 ) : (
-                  <div>Click or drag and drop to upload</div>
+                  <ImageIcon
+                    className="h-6 w-6 text-zinc-500
+                 mb-2"
+                  />
                 )}
+                <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
+                  {isUploading ? (
+                    <div className="flex flex-col items-center">
+                      <p>Uploading</p>
+                      <Progress
+                        value={uploadprogress}
+                        className="mt-4 w-44 bg-gray-400"
+                      />
+                    </div>
+                  ) : isPending ? (
+                    <div className="flex flex-col items-center">
+                      <p>Redirecting plase wait</p>
+                    </div>
+                  ) : isDragOver ? (
+                    <div className="flex flex-col items-center">
+                      <p>Drop File</p>
+                    </div>
+                  ) : (
+                    <div>Click or drag and drop to upload</div>
+                  )}
 
-                {isUploading ? null : <p>Png or Jpg</p>}
+                  {isUploading ? null : <p>Png or Jpg</p>}
+                </div>
               </div>
-            </div>
-          )}
-        </Dropzone>
+            )}
+          </Dropzone>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
