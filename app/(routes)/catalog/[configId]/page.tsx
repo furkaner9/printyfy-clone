@@ -1,4 +1,4 @@
-import { products, routes } from "@/app/contains";
+import { products } from "@/app/contains";
 import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import Image from "next/image";
@@ -13,7 +13,8 @@ interface ConfigPageProps {
 }
 
 const ConfigPage = async ({ params }: ConfigPageProps) => {
-  const configId = params.configId;
+  const { configId } = params;
+
   if (!isValidObjectId(configId)) {
     return notFound();
   }
@@ -23,17 +24,18 @@ const ConfigPage = async ({ params }: ConfigPageProps) => {
       id: configId,
     },
   });
+
   if (!configrations) {
     return notFound();
   }
 
   return (
-    <div className="conteiner mx-auto">
-      <div className="relative h-[800px]  md:h-[500px] flex-1 my-16 w-full rounded-xl bg-gray-900/5 p-2 flex  justify-center items-center">
-        <div className="flex flex-col md:flex-row gab-8 ">
+    <div className="container mx-auto">
+      <div className="relative h-[800px] md:h-[500px] flex-1 my-16 w-full rounded-xl bg-gray-900/5 p-2 flex justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-8">
           {products.map((product) => (
             <Link
-              href={`/catalog/${params.configId}/${product.href}`}
+              href={`/catalog/${configId}/${product.href}`}
               key={product.id}
               className="flex flex-col gap-4 group"
             >
@@ -51,7 +53,7 @@ const ConfigPage = async ({ params }: ConfigPageProps) => {
           ))}
         </div>
       </div>
-      {params.configId}
+      <div>{configId}</div>
     </div>
   );
 };

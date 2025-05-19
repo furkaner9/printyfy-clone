@@ -70,19 +70,19 @@ type ProductType = {
 export const products: ProductType[] = [
   {
     id: 1,
-    image: "/product/1.png",
+    image: "/product/1.jpg",
     title: "Phone",
     href: "phone",
   },
   {
     id: 2,
-    image: "/product/2.png",
+    image: "/product/2.jpg",
     title: "T-shirt",
     href: "tshirt",
   },
   {
     id: 3,
-    image: "/product/3.png",
+    image: "/product/3.jpg",
     title: "Mug",
     href: "mug",
   },
