@@ -32,7 +32,7 @@ export const COLORS: Color[] = [
   {
     label: "Yellow",
     value: "yellow",
-    tw: "bg-yellow-900",
+    tw: "bg-yellow-200",
   },
 ];
 

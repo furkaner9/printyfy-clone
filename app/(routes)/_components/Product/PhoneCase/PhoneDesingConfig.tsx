@@ -9,9 +9,15 @@ import { Rnd } from "react-rnd";
 import HandleComponent from "../HandleComponent";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RadioGroup } from "@headlessui/react";
-import { COLORS, FINISHES, MATERIALS, MODEL } from "./PhoneCase";
+import {
+  COLORS,
+  FINISHES,
+  MATERIALS,
+  MODEL,
+  PHONE_BASE_PRICE,
+} from "./PhoneCase";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown } from "lucide-react";
+import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 
 interface PhoneDesingConfigProps {
   configId: string;
@@ -71,11 +77,11 @@ const PhoneDesingConfig = ({
           ref={containerRef}
           className="col-span-2 relative h-[600px] overflow-hidden w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-b-gray-300 p-12 text-center"
         >
-          <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1840]">
+          <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831]">
             <AspectRatio
               ref={phoneCaseRef}
-              ratio={896 / 1840}
-              className="aspect-[896/1840] pointer-events-none z-50 relative"
+              ratio={896 / 1831}
+              className="aspect-[896/1831] pointer-events-none z-50 relative"
             >
               <Image
                 alt=""
@@ -85,7 +91,12 @@ const PhoneDesingConfig = ({
               />
             </AspectRatio>
             <div className="absolute z-40 inset-0 left-[2px] top-px bottom-px right-[2px] rounded-[32px] shadow-[0_0_0_99999px_rgba(229,231,235,0.7)]" />
-            <div className="bg-yellow-200 absolute left-[2px] top-px bottom-px right-[2px] rounded-[32px]" />
+            <div
+              className={cn(
+                "absolute inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px]",
+                options.color.tw
+              )}
+            ></div>
           </div>
           <Rnd
             default={{
@@ -187,22 +198,99 @@ const PhoneDesingConfig = ({
                             setOptions((prev) => ({ ...prev, model }));
                           }}
                           className={cn(
-                            "flex w-72 lg:w-96 text-sm gap-1 items-center ",
+                            "flex w-72 lg:w-96 sm:w-72 text-sm gap-1 items-center ",
                             {
                               "bg-zinc-200":
                                 model.label === options.model.label,
                             }
                           )}
                         >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              model.label === options.model.label
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+
                           {model.label}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
+                <div className="flex flex-col gap-6 mt-6">
+                  {[...MATERIALS, ...FINISHES].map((group) => (
+                    <RadioGroup
+                      key={group.name}
+                      value={options[group.name as "material" | "finish"]}
+                      onChange={(val) =>
+                        setOptions((prev) => ({
+                          ...prev,
+                          [group.name]: val,
+                        }))
+                      }
+                    >
+                      <Label className="mb-2 block">
+                        {group.name.charAt(0).toUpperCase() +
+                          group.name.slice(1)}
+                      </Label>
+                      <div className="flex flex-col gap-2">
+                        {group.options.map((option) => (
+                          <RadioGroup.Option
+                            key={option.value}
+                            value={option}
+                            className={({ checked }) =>
+                              cn(
+                                "flex items-start p-4 border rounded-md cursor-pointer transition-colors",
+                                {
+                                  "border-black bg-gray-100": checked,
+                                  "border-gray-300": !checked,
+                                }
+                              )
+                            }
+                          >
+                            {({ checked }) => (
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {option.label}
+                                </span>
+                                {option.descriptions && (
+                                  <span className="text-sm text-gray-500">
+                                    {option.descriptions}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  ))}
+                </div>
               </div>
             </div>
           </ScrollArea>
+          <div className="w-full px-8 h-16 bg-white">
+            <div className="h-px w-full bg-zinc-200"></div>
+            <div className="w-full h-full flex justify-end items-center ">
+              <div className="w-full flex gap-6 items-center">
+                <p className="font-semibold">
+                  {formatPrice(
+                    (PHONE_BASE_PRICE +
+                      options.finish.price +
+                      options.material.price) /
+                      100
+                  )}
+                </p>
+                <Button size="sm" className="w-full">
+                  Contunie
+                  <ArrowRight className="h-4 w-4 ml-1 inline" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

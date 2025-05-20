@@ -54,7 +54,8 @@ export type CaseFinish = (typeof CaseFinish)[keyof typeof CaseFinish]
 export const CaseColor: {
   black: 'black',
   blue: 'blue',
-  rose: 'rose'
+  rose: 'rose',
+  yellow: 'yellow'
 };
 
 export type CaseColor = (typeof CaseColor)[keyof typeof CaseColor]
