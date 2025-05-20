@@ -1,15 +1,15 @@
-export const PHONE_PRİCE = {
+export const PHONE_PRICE = {
   material: {
     silicone: 0,
-    polycarbonate: 7_00,
+    polycarbonate: 700,
   },
   finish: {
     smooth: 0,
-    texttured: 4_00,
+    textured: 400,
   },
 } as const;
 
-export const PHONE_BASE_PRİCE = 12_00;
+export const PHONE_BASE_PRICE = 1200;
 
 type Color = { label: string; value: string; tw: string };
 
@@ -17,29 +17,34 @@ export const COLORS: Color[] = [
   {
     label: "Black",
     value: "black",
-    tw: "zinc-900",
+    tw: "bg-zinc-900",
   },
   {
     label: "Blue",
     value: "blue",
-    tw: "blue-950",
+    tw: "bg-blue-950",
   },
   {
     label: "Rose",
     value: "rose",
-    tw: "rose-950",
+    tw: "bg-rose-950",
+  },
+  {
+    label: "Yellow",
+    value: "yellow",
+    tw: "bg-yellow-900",
   },
 ];
 
 type Model = { label: string; value: string };
 
 export const MODEL: Model[] = [
-  { label: "İPhone X", value: "iphonex" },
-  { label: "İPhone 11", value: "iphone11" },
-  { label: "İPhone 12", value: "iphone12" },
-  { label: "İPhone 13", value: "iphone13" },
-  { label: "İPhone 14", value: "iphone14" },
-  { label: "İPhone 15", value: "iphone15" },
+  { label: "iPhone X", value: "iphonex" },
+  { label: "iPhone 11", value: "iphone11" },
+  { label: "iPhone 12", value: "iphone12" },
+  { label: "iPhone 13", value: "iphone13" },
+  { label: "iPhone 14", value: "iphone14" },
+  { label: "iPhone 15", value: "iphone15" },
 ];
 
 type Option = {
@@ -49,7 +54,7 @@ type Option = {
   price: number;
 };
 
-type Group = {
+export type Group = {
   name: string;
   options: Option[];
 };
@@ -62,13 +67,13 @@ export const MATERIALS: Group[] = [
         label: "Silicone",
         value: "silicone",
         descriptions: undefined,
-        price: PHONE_PRİCE.material.silicone,
+        price: PHONE_PRICE.material.silicone,
       },
       {
         label: "Sort Polycarbonate",
         value: "polycarbonate",
         descriptions: "Scratch-resistant-coating",
-        price: PHONE_PRİCE.material.polycarbonate,
+        price: PHONE_PRICE.material.polycarbonate,
       },
     ],
   },
@@ -82,13 +87,13 @@ export const FINISHES: Group[] = [
         label: "Smooth Finish",
         value: "smooth",
         descriptions: undefined,
-        price: PHONE_PRİCE.finish.smooth,
+        price: PHONE_PRICE.finish.smooth,
       },
       {
         label: "Textured Finish",
         value: "textured",
         descriptions: "Soft grippy textured",
-        price: PHONE_PRİCE.finish.texttured,
+        price: PHONE_PRICE.finish.textured,
       },
     ],
   },

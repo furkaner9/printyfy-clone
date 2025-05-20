@@ -7,13 +7,13 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 interface ConfigPageProps {
-  params: {
+  params: Promise<{
     configId: string;
-  };
+  }>;
 }
 
 const ConfigPage = async ({ params }: ConfigPageProps) => {
-  const { configId } = params;
+  const { configId } = await params;
 
   if (!isValidObjectId(configId)) {
     return notFound();
