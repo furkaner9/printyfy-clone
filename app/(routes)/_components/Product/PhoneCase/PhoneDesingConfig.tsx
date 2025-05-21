@@ -28,6 +28,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { saveConfig as _saveConfig, SaveConfigArgs } from "./PhoneAction";
+import { useUploadThing } from "@/lib/uploadthing";
+import { resolve } from "path";
+import { array } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { error } from "console";
+import {
+  CaseColor,
+  CaseFinish,
+  CaseMaterial,
+  PhoneModel,
+  ProductType,
+} from "@/lib/generated/prisma";
 
 interface PhoneDesingConfigProps {
   configId: string;
@@ -36,12 +49,14 @@ interface PhoneDesingConfigProps {
     width: number;
     height: number;
   };
+  productType: string;
 }
 
 const PhoneDesingConfig = ({
   configId,
   imageDimensions,
   imageUrl,
+  productType,
 }: PhoneDesingConfigProps) => {
   const router = useRouter();
   const [renderedDimension, setRenderedDimension] = useState({
@@ -67,6 +82,78 @@ const PhoneDesingConfig = ({
     model: MODEL[0],
     material: MATERIALS[0].options[0],
     finish: FINISHES[0].options[0],
+  });
+
+  const { startUpload } = useUploadThing("imageUploader");
+
+  async function saveConfigration() {
+    const {
+      left: caseLeft,
+      top: caseTop,
+      width,
+      height,
+    } = phoneCaseRef.current!.getBoundingClientRect();
+
+    const { left: containerLeft, top: containerTop } =
+      containerRef.current!.getBoundingClientRect();
+
+    const leftOffset = caseLeft - containerLeft;
+    const topOffset = caseTop - containerTop;
+
+    const actualX = renderedPosition.x - leftOffset;
+    const actualY = renderedPosition.y - leftOffset;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+
+    const userImage = new window.Image();
+    userImage.crossOrigin = "anonymous";
+    userImage.src = imageUrl;
+    await new Promise((resolve) => (userImage.onload = resolve));
+
+    ctx?.drawImage(
+      userImage,
+      actualX,
+      actualY,
+      renderedDimension.width,
+      renderedDimension.height
+    );
+
+    const base64 = canvas.toDataURL();
+    const base64Data = base64.split(",")[1];
+
+    const blob = base64ToBlob(base64Data, "image/png");
+
+    function base64ToBlob(base64: string, mimeType: string) {
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      return new Blob([byteArray], { type: mimeType });
+    }
+  }
+  const { mutate: saveConfig, isPending } = useMutation({
+    mutationKey: ["save-congig"],
+    mutationFn: async (args: SaveConfigArgs) => {
+      try {
+        await Promise.all([saveConfigration(), _saveConfig(args)]);
+      } catch (error) {
+        console.error("Mutation error:", error);
+        throw error;
+      }
+    },
+    onError: (error) => {
+      console.error("Mutation onError:", error);
+      toast("Something was wrong");
+    },
+    onSuccess: () => {
+      console.log("Mutation onSuccses");
+      router.push("/");
+    },
   });
 
   return (
@@ -284,8 +371,33 @@ const PhoneDesingConfig = ({
                       100
                   )}
                 </p>
-                <Button size="sm" className="w-full">
-                  Contunie
+                <Button
+                  variant="mybutton"
+                  size="sm"
+                  className="w-full"
+                  disabled={isPending}
+                  onClick={() => {
+                    // Güvenli dönüşüm: tüm option'lar enum string'lerine dönüştürülüyor
+                    const casecolor = options.color
+                      .value as keyof typeof CaseColor;
+                    const casefinish = options.finish
+                      .value as keyof typeof CaseFinish;
+                    const casematerial = options.material
+                      .value as keyof typeof CaseMaterial;
+                    const casemodel = options.model
+                      .value as keyof typeof PhoneModel;
+
+                    saveConfig({
+                      configId,
+                      casecolor: CaseColor[casecolor],
+                      casefinish: CaseFinish[casefinish],
+                      casematerial: CaseMaterial[casematerial],
+                      casemodel: PhoneModel[casemodel],
+                      type: ProductType.phoneCase,
+                    });
+                  }}
+                >
+                  Continue
                   <ArrowRight className="h-4 w-4 ml-1 inline" />
                 </Button>
               </div>

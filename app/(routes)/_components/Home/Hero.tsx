@@ -41,6 +41,7 @@ const Hero = () => {
         </div>
         <div className="lg:w-1/2 flex justify-ceter items-center">
           <Image
+          unoptimized
             src="/hero.gif"
             alt="hero"
             width={512}

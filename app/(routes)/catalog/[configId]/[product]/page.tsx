@@ -31,13 +31,22 @@ const ProductPage = async ({ params }: ProductPageProps) => {
 
   const { imageUrl, width, height, id } = configuration;
 
-  return (
-    <PhoneDesingConfig
-      configId={id}
-      imageDimensions={{ width, height }}
-      imageUrl={imageUrl}
-    />
-  );
+  if ((await params).product === "phone") {
+    return (
+      <PhoneDesingConfig
+        configId={id}
+        imageDimensions={{ width, height }}
+        imageUrl={imageUrl}
+        productType="phoneCase"
+      />
+    );
+  } else if ((await params).product === "mug") {
+    return <div>mug</div>;
+  } else if ((await params).product === "tshirt") {
+    return <div>tshirt</div>;
+  } else {
+    return notFound();
+  }
 };
 
 export default ProductPage;
