@@ -1,7 +1,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../lib/generated/prisma"
+   output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -66,21 +66,29 @@ enum ProductType {
 }
 
 model Configuration {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  type             ProductType?
+  id                   String       @id @default(auto()) @map("_id") @db.ObjectId
+  type                 ProductType?
 
-  imageUrl         String
-  width            Int
-  height           Int  
-  caseColor        CaseColor?
-  caseModel        PhoneModel?
-  caseMaterial     CaseMaterial?
-  caseFinish       CaseFinish?
-  size             TshirtSize?
-  tshirtcolor      TshirtColor?
-  mugColor         MugColor?
-  croppedImageUrl  String?
+  imageUrl             String
+  width                Int
+  height               Int
 
-  createdAt DateTime @default(now()) 
-  updatedAt DateTime @updatedAt
+  // Yeni eklenen alanlar
+  croppedImageUrl      String?      // Kırpılmış resmin URL'i
+  imagePositionX       Int?         // Kırpılmış resmin X konumu
+  imagePositionY       Int?         // Kırpılmış resmin Y konumu
+  imageDimensionWidth  Int?         // Kırpılmış resmin genişliği
+  imageDimensionHeight Int?         // Kırpılmış resmin yüksekliği
+
+  caseColor            CaseColor?
+  caseModel            PhoneModel?
+  caseMaterial         CaseMaterial?
+  caseFinish           CaseFinish?
+  size                 TshirtSize?
+  tshirtcolor          TshirtColor?
+  mugColor             MugColor?
+
+
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
 }

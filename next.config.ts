@@ -2,10 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["unxua7apqj.ufs.sh"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "unxua7apqj.ufs.sh",
+        pathname: "/**", // tüm yolları kapsar
+      },
+    ],
   },
 
-  /* config options here */
+  // Diğer config ayarlarını buraya ekleyebilirsin
 };
 
 export default nextConfig;

@@ -1,31 +1,61 @@
-import { prismadb } from "@/lib/prismadb";
-
+// app/api/save-config/route.ts
 import { NextResponse } from "next/server";
+import {
+  saveConfig,
+  SaveConfigArgs,
+} from "@/app/(routes)/_components/Product/PhoneCase/PhoneAction"; // Bu yolu kontrol edin!
 
 export async function POST(req: Request) {
+  // Sadece POST metodu
   try {
-    const data = await req.json();
+    const body = await req.json();
 
-    const config = await prismadb.configuration.create({
-      data: {
-        caseColor: data.casecolor,
-        caseFinish: data.casefinish,
-        caseMaterial: data.casematerial,
-        caseModel: data.casemodel,
-        type: data.type,
-        imageUrl: data.imageUrl,
-        width: data.width,
-        height: data.height,
-        croppedImageUrl: data.croppedImageUrl ?? null,
-      },
-    });
+    // İstek gövdesinden gelen verileri güvenli bir şekilde alın
+    const {
+      configId,
+      casecolor,
+      casefinish,
+      casematerial,
+      casemodel,
+      type,
+      croppedImageUrl,
+      imageX,
+      imageY,
+      imageWidth,
+      imageHeight,
+    } = body;
 
-    return NextResponse.json(config, { status: 201 });
-  } catch (error) {
-    console.error("API save-config error:", error);
+    // saveConfig fonksiyonuna göndereceğiniz argümanları oluşturun
+    const args: SaveConfigArgs = {
+      configId,
+      casecolor,
+      casefinish,
+      casematerial,
+      casemodel,
+      type,
+      croppedImageUrl,
+      imageX,
+      imageY,
+      imageWidth,
+      imageHeight,
+    };
+
+    // Sunucu tarafı fonksiyonunu çağırın
+    await saveConfig(args);
+
+    // Başarılı yanıt gönderin
     return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
+      { message: "Yapılandırma başarıyla kaydedildi!" },
+      { status: 200 }
     );
+  } catch (error) {
+    // Hata durumunda konsola loglayın ve hata yanıtı gönderin
+    console.error("API Hatası:", error);
+    // Hatanın türünü kontrol etmek iyi bir pratik olabilir
+    let errorMessage = "Yapılandırma kaydedilirken bilinmeyen bir hata oluştu.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

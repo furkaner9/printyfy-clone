@@ -3,7 +3,7 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react"; // useEffect eklendi
 import { toast } from "sonner";
 import { Rnd } from "react-rnd";
 import HandleComponent from "../HandleComponent";
@@ -28,19 +28,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
-import { saveConfig as _saveConfig, SaveConfigArgs } from "./PhoneAction";
+// _saveConfig import'ı kaldırıldı, SaveConfigArgs tipi ise PhoneAction'dan alınacak
+import { SaveConfigArgs } from "./PhoneAction"; // Sadece tipi import ediyoruz
 import { useUploadThing } from "@/lib/uploadthing";
-import { resolve } from "path";
-import { array } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { error } from "console";
 import {
   CaseColor,
   CaseFinish,
   CaseMaterial,
   PhoneModel,
   ProductType,
-} from "@/lib/generated/prisma";
+} from "@/lib/generated/prisma"; // Prisma tarafından oluşturulan tipleri kullanabilirsiniz
 
 interface PhoneDesingConfigProps {
   configId: string;
@@ -86,7 +84,7 @@ const PhoneDesingConfig = ({
 
   const { startUpload } = useUploadThing("imageUploader");
 
-  async function saveConfigration() {
+  async function processAndUploadImage(): Promise<string> {
     const {
       left: caseLeft,
       top: caseTop,
@@ -101,7 +99,7 @@ const PhoneDesingConfig = ({
     const topOffset = caseTop - containerTop;
 
     const actualX = renderedPosition.x - leftOffset;
-    const actualY = renderedPosition.y - leftOffset;
+    const actualY = renderedPosition.y - topOffset;
 
     const canvas = document.createElement("canvas");
     canvas.width = width;
@@ -121,10 +119,8 @@ const PhoneDesingConfig = ({
       renderedDimension.height
     );
 
-    const base64 = canvas.toDataURL();
+    const base64 = canvas.toDataURL("image/png");
     const base64Data = base64.split(",")[1];
-
-    const blob = base64ToBlob(base64Data, "image/png");
 
     function base64ToBlob(base64: string, mimeType: string) {
       const byteCharacters = atob(base64);
@@ -135,27 +131,75 @@ const PhoneDesingConfig = ({
       const byteArray = new Uint8Array(byteNumbers);
       return new Blob([byteArray], { type: mimeType });
     }
+
+    const blob = base64ToBlob(base64Data, "image/png");
+
+    // Düzeltme burada: startUpload'a ikinci argüman olarak boş bir obje geçiyoruz
+    const uploadResult = await startUpload(
+      [new File([blob], "cropped.png", { type: "image/png" })],
+      {} // İkinci argüman: metadata (şu an boş bir obje)
+    );
+
+    if (!uploadResult || uploadResult.length === 0 || !uploadResult[0].url) {
+      throw new Error("Resim yüklenemedi veya URL alınamadı.");
+    }
+
+    const fileResponse = uploadResult[0];
+
+    return fileResponse.url;
   }
-  const { mutate: saveConfig, isPending } = useMutation({
-    mutationKey: ["save-congig"],
-    mutationFn: async (args: SaveConfigArgs) => {
-      try {
-        await Promise.all([saveConfigration(), _saveConfig(args)]);
-      } catch (error) {
-        console.error("Mutation error:", error);
-        throw error;
+
+  const { mutate: saveConfigMutation, isPending } = useMutation({
+    mutationKey: ["save-config"],
+    mutationFn: async () => {
+      // Önce resmi işle ve UploadThing'e yükle, URL'ini al
+      const croppedImageUrl = await processAndUploadImage();
+
+      // API rotasına gönderilecek payload'ı oluştur
+      const payload: SaveConfigArgs = {
+        configId,
+        casecolor: options.color.value as CaseColor,
+        casemodel: options.model.value as PhoneModel,
+        casematerial: options.material.value as CaseMaterial,
+        casefinish: options.finish.value as CaseFinish,
+        type: productType as ProductType, // Ensure productType is valid
+        croppedImageUrl, // Yüklenen resmin URL'ini gönder
+        imageX: renderedPosition.x,
+        imageY: renderedPosition.y,
+        imageWidth: renderedDimension.width,
+        imageHeight: renderedDimension.height,
+      };
+
+      // API rotasına POST isteği gönder
+      // Bu fetch isteğini ayrı bir API route (örneğin /api/save-phone-config) üzerinden yaptığınızdan emin olun.
+      // PhoneAction.ts'yi doğrudan çağırmayın.
+      const response = await fetch("/api/save-config", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Yapılandırma kaydedilirken bir hata oluştu."
+        );
       }
+
+      return response.json(); // Başarılı yanıtı döndür
     },
     onError: (error) => {
       console.error("Mutation onError:", error);
-      toast("Something was wrong");
+      toast.error(`Bir şeyler yanlış gitti: ${error.message}`);
     },
     onSuccess: () => {
-      console.log("Mutation onSuccses");
-      router.push("/");
+      console.log("Mutation onSuccess");
+      toast.success("Telefon kılıfınız başarıyla yapılandırıldı!");
+      router.push(`/configure/preview?id=${configId}`); // Başarılı olursa preview sayfasına yönlendirin
     },
   });
-
   return (
     <div className="container mx-auto">
       <div className="relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20">
@@ -171,7 +215,7 @@ const PhoneDesingConfig = ({
               className="aspect-[896/1831] pointer-events-none z-50 relative"
             >
               <Image
-                alt=""
+                alt="Phone template"
                 fill
                 src="/phone-template.png"
                 className="pointer-events-none z-50 select-none"
@@ -264,7 +308,7 @@ const PhoneDesingConfig = ({
                   </div>
                 </RadioGroup>
 
-                <div className="relative flex  flex-col gap-3 w-full">
+                <div className="relative flex flex-col gap-3 w-full">
                   <Label>Model</Label>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -300,7 +344,6 @@ const PhoneDesingConfig = ({
                                 : "opacity-0"
                             )}
                           />
-
                           {model.label}
                         </DropdownMenuItem>
                       ))}
@@ -375,26 +418,10 @@ const PhoneDesingConfig = ({
                   variant="mybutton"
                   size="sm"
                   className="w-full"
-                  disabled={isPending}
+                  disabled={isPending} // isPending'i kullanın
                   onClick={() => {
-                    // Güvenli dönüşüm: tüm option'lar enum string'lerine dönüştürülüyor
-                    const casecolor = options.color
-                      .value as keyof typeof CaseColor;
-                    const casefinish = options.finish
-                      .value as keyof typeof CaseFinish;
-                    const casematerial = options.material
-                      .value as keyof typeof CaseMaterial;
-                    const casemodel = options.model
-                      .value as keyof typeof PhoneModel;
-
-                    saveConfig({
-                      configId,
-                      casecolor: CaseColor[casecolor],
-                      casefinish: CaseFinish[casefinish],
-                      casematerial: CaseMaterial[casematerial],
-                      casemodel: PhoneModel[casemodel],
-                      type: ProductType.phoneCase,
-                    });
+                    // saveConfigMutation'ı çağırın. Argümanlar mutationFn içinde belirlenecek.
+                    saveConfigMutation();
                   }}
                 >
                   Continue
