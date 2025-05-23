@@ -37,7 +37,7 @@ export type PhoneModel = (typeof PhoneModel)[keyof typeof PhoneModel]
 
 export const CaseMaterial: {
   silicone: 'silicone',
-  policarbonate: 'policarbonate'
+  polycarbonate: 'polycarbonate'
 };
 
 export type CaseMaterial = (typeof CaseMaterial)[keyof typeof CaseMaterial]

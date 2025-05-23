@@ -197,7 +197,7 @@ const PhoneDesingConfig = ({
     onSuccess: () => {
       console.log("Mutation onSuccess");
       toast.success("Telefon kılıfınız başarıyla yapılandırıldı!");
-      router.push(`/configure/preview?id=${configId}`); // Başarılı olursa preview sayfasına yönlendirin
+      router.push(`/`); // Başarılı olursa preview sayfasına yönlendirin
     },
   });
   return (
