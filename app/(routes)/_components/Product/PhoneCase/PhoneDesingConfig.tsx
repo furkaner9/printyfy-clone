@@ -408,10 +408,9 @@ const PhoneDesingConfig = ({
               <div className="w-full flex gap-6 items-center">
                 <p className="font-semibold">
                   {formatPrice(
-                    (PHONE_BASE_PRICE +
+                    PHONE_BASE_PRICE +
                       options.finish.price +
-                      options.material.price) /
-                      100
+                      options.material.price
                   )}
                 </p>
                 <Button

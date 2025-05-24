@@ -24,6 +24,8 @@ export type SaveConfigArgs = {
   imageY?: number;
   imageWidth?: number;
   imageHeight?: number;
+  basePrice:number;
+  totalPrice:number;
 };
 
 export async function saveConfig({
@@ -38,6 +40,9 @@ export async function saveConfig({
   imageY,
   imageWidth,
   imageHeight,
+  basePrice,
+  totalPrice,
+
 }: SaveConfigArgs) {
   try {
     await prismadb.configuration.update({

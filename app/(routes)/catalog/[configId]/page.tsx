@@ -53,7 +53,6 @@ const ConfigPage = async ({ params }: ConfigPageProps) => {
           ))}
         </div>
       </div>
-      <div>{configId}</div>
     </div>
   );
 };
