@@ -24,8 +24,8 @@ export type SaveConfigArgs = {
   imageY?: number;
   imageWidth?: number;
   imageHeight?: number;
-  basePrice:number;
-  totalPrice:number;
+  basePrice: number;
+  totalPrice: number;
 };
 
 export async function saveConfig({
@@ -42,7 +42,6 @@ export async function saveConfig({
   imageHeight,
   basePrice,
   totalPrice,
-
 }: SaveConfigArgs) {
   try {
     await prismadb.configuration.update({
@@ -53,7 +52,8 @@ export async function saveConfig({
         caseMaterial: casematerial,
         caseModel: casemodel,
         type,
-        // Eklenen alanları da veritabanına kaydedin
+        basePrice: basePrice,
+        totalPrice: totalPrice, // Eklenen alanları da veritabanına kaydedin
         croppedImageUrl: croppedImageUrl || null,
         imagePositionX: imageX, // Prisma modelinizde bu alanların tanımlı olduğundan emin olun
         imagePositionY: imageY,

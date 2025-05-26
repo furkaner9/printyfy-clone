@@ -85,6 +85,8 @@ model Configuration {
   size         TshirtSize?
   tshirtcolor  TshirtColor?
   mugColor     MugColor?
+  basePrice    Float?
+  totalPrice   Float?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

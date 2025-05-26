@@ -168,6 +168,9 @@ const PhoneDesingConfig = ({
         imageY: renderedPosition.y,
         imageWidth: renderedDimension.width,
         imageHeight: renderedDimension.height,
+        basePrice: PHONE_BASE_PRICE,
+        totalPrice:
+          PHONE_BASE_PRICE + options.finish.price + options.material.price,
       };
 
       // API rotasına POST isteği gönder
@@ -197,7 +200,7 @@ const PhoneDesingConfig = ({
     onSuccess: () => {
       console.log("Mutation onSuccess");
       toast.success("Telefon kılıfınız başarıyla yapılandırıldı!");
-      router.push(`/`); // Başarılı olursa preview sayfasına yönlendirin
+      router.push(`/catalog/${configId}/phone/preview`); // Başarılı olursa preview sayfasına yönlendirin
     },
   });
   return (
@@ -230,6 +233,7 @@ const PhoneDesingConfig = ({
             ></div>
           </div>
           <Rnd
+            bounds="parent"
             default={{
               x: 150,
               y: 205,

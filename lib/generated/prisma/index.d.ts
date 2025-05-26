@@ -958,6 +958,8 @@ export namespace Prisma {
     imagePositionY: number | null
     imageDimensionWidth: number | null
     imageDimensionHeight: number | null
+    basePrice: number | null
+    totalPrice: number | null
   }
 
   export type ConfigurationSumAggregateOutputType = {
@@ -967,6 +969,8 @@ export namespace Prisma {
     imagePositionY: number | null
     imageDimensionWidth: number | null
     imageDimensionHeight: number | null
+    basePrice: number | null
+    totalPrice: number | null
   }
 
   export type ConfigurationMinAggregateOutputType = {
@@ -987,6 +991,8 @@ export namespace Prisma {
     size: $Enums.TshirtSize | null
     tshirtcolor: $Enums.TshirtColor | null
     mugColor: $Enums.MugColor | null
+    basePrice: number | null
+    totalPrice: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1009,6 +1015,8 @@ export namespace Prisma {
     size: $Enums.TshirtSize | null
     tshirtcolor: $Enums.TshirtColor | null
     mugColor: $Enums.MugColor | null
+    basePrice: number | null
+    totalPrice: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1031,6 +1039,8 @@ export namespace Prisma {
     size: number
     tshirtcolor: number
     mugColor: number
+    basePrice: number
+    totalPrice: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1044,6 +1054,8 @@ export namespace Prisma {
     imagePositionY?: true
     imageDimensionWidth?: true
     imageDimensionHeight?: true
+    basePrice?: true
+    totalPrice?: true
   }
 
   export type ConfigurationSumAggregateInputType = {
@@ -1053,6 +1065,8 @@ export namespace Prisma {
     imagePositionY?: true
     imageDimensionWidth?: true
     imageDimensionHeight?: true
+    basePrice?: true
+    totalPrice?: true
   }
 
   export type ConfigurationMinAggregateInputType = {
@@ -1073,6 +1087,8 @@ export namespace Prisma {
     size?: true
     tshirtcolor?: true
     mugColor?: true
+    basePrice?: true
+    totalPrice?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1095,6 +1111,8 @@ export namespace Prisma {
     size?: true
     tshirtcolor?: true
     mugColor?: true
+    basePrice?: true
+    totalPrice?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1117,6 +1135,8 @@ export namespace Prisma {
     size?: true
     tshirtcolor?: true
     mugColor?: true
+    basePrice?: true
+    totalPrice?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1226,6 +1246,8 @@ export namespace Prisma {
     size: $Enums.TshirtSize | null
     tshirtcolor: $Enums.TshirtColor | null
     mugColor: $Enums.MugColor | null
+    basePrice: number | null
+    totalPrice: number | null
     createdAt: Date
     updatedAt: Date
     _count: ConfigurationCountAggregateOutputType | null
@@ -1267,6 +1289,8 @@ export namespace Prisma {
     size?: boolean
     tshirtcolor?: boolean
     mugColor?: boolean
+    basePrice?: boolean
+    totalPrice?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["configuration"]>
@@ -1291,11 +1315,13 @@ export namespace Prisma {
     size?: boolean
     tshirtcolor?: boolean
     mugColor?: boolean
+    basePrice?: boolean
+    totalPrice?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ConfigurationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "imageUrl" | "width" | "height" | "croppedImageUrl" | "imagePositionX" | "imagePositionY" | "imageDimensionWidth" | "imageDimensionHeight" | "caseColor" | "caseModel" | "caseMaterial" | "caseFinish" | "size" | "tshirtcolor" | "mugColor" | "createdAt" | "updatedAt", ExtArgs["result"]["configuration"]>
+  export type ConfigurationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "imageUrl" | "width" | "height" | "croppedImageUrl" | "imagePositionX" | "imagePositionY" | "imageDimensionWidth" | "imageDimensionHeight" | "caseColor" | "caseModel" | "caseMaterial" | "caseFinish" | "size" | "tshirtcolor" | "mugColor" | "basePrice" | "totalPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["configuration"]>
 
   export type $ConfigurationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Configuration"
@@ -1318,6 +1344,8 @@ export namespace Prisma {
       size: $Enums.TshirtSize | null
       tshirtcolor: $Enums.TshirtColor | null
       mugColor: $Enums.MugColor | null
+      basePrice: number | null
+      totalPrice: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["configuration"]>
@@ -1729,6 +1757,8 @@ export namespace Prisma {
     readonly size: FieldRef<"Configuration", 'TshirtSize'>
     readonly tshirtcolor: FieldRef<"Configuration", 'TshirtColor'>
     readonly mugColor: FieldRef<"Configuration", 'MugColor'>
+    readonly basePrice: FieldRef<"Configuration", 'Float'>
+    readonly totalPrice: FieldRef<"Configuration", 'Float'>
     readonly createdAt: FieldRef<"Configuration", 'DateTime'>
     readonly updatedAt: FieldRef<"Configuration", 'DateTime'>
   }
@@ -2101,6 +2131,8 @@ export namespace Prisma {
     size: 'size',
     tshirtcolor: 'tshirtcolor',
     mugColor: 'mugColor',
+    basePrice: 'basePrice',
+    totalPrice: 'totalPrice',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -2270,20 +2302,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2294,6 +2312,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
   /**
    * Deep Input Types
@@ -2321,6 +2353,8 @@ export namespace Prisma {
     size?: EnumTshirtSizeNullableFilter<"Configuration"> | $Enums.TshirtSize | null
     tshirtcolor?: EnumTshirtColorNullableFilter<"Configuration"> | $Enums.TshirtColor | null
     mugColor?: EnumMugColorNullableFilter<"Configuration"> | $Enums.MugColor | null
+    basePrice?: FloatNullableFilter<"Configuration"> | number | null
+    totalPrice?: FloatNullableFilter<"Configuration"> | number | null
     createdAt?: DateTimeFilter<"Configuration"> | Date | string
     updatedAt?: DateTimeFilter<"Configuration"> | Date | string
   }
@@ -2343,6 +2377,8 @@ export namespace Prisma {
     size?: SortOrder
     tshirtcolor?: SortOrder
     mugColor?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -2368,6 +2404,8 @@ export namespace Prisma {
     size?: EnumTshirtSizeNullableFilter<"Configuration"> | $Enums.TshirtSize | null
     tshirtcolor?: EnumTshirtColorNullableFilter<"Configuration"> | $Enums.TshirtColor | null
     mugColor?: EnumMugColorNullableFilter<"Configuration"> | $Enums.MugColor | null
+    basePrice?: FloatNullableFilter<"Configuration"> | number | null
+    totalPrice?: FloatNullableFilter<"Configuration"> | number | null
     createdAt?: DateTimeFilter<"Configuration"> | Date | string
     updatedAt?: DateTimeFilter<"Configuration"> | Date | string
   }, "id">
@@ -2390,6 +2428,8 @@ export namespace Prisma {
     size?: SortOrder
     tshirtcolor?: SortOrder
     mugColor?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ConfigurationCountOrderByAggregateInput
@@ -2420,6 +2460,8 @@ export namespace Prisma {
     size?: EnumTshirtSizeNullableWithAggregatesFilter<"Configuration"> | $Enums.TshirtSize | null
     tshirtcolor?: EnumTshirtColorNullableWithAggregatesFilter<"Configuration"> | $Enums.TshirtColor | null
     mugColor?: EnumMugColorNullableWithAggregatesFilter<"Configuration"> | $Enums.MugColor | null
+    basePrice?: FloatNullableWithAggregatesFilter<"Configuration"> | number | null
+    totalPrice?: FloatNullableWithAggregatesFilter<"Configuration"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Configuration"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Configuration"> | Date | string
   }
@@ -2442,6 +2484,8 @@ export namespace Prisma {
     size?: $Enums.TshirtSize | null
     tshirtcolor?: $Enums.TshirtColor | null
     mugColor?: $Enums.MugColor | null
+    basePrice?: number | null
+    totalPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -2464,6 +2508,8 @@ export namespace Prisma {
     size?: $Enums.TshirtSize | null
     tshirtcolor?: $Enums.TshirtColor | null
     mugColor?: $Enums.MugColor | null
+    basePrice?: number | null
+    totalPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -2485,6 +2531,8 @@ export namespace Prisma {
     size?: NullableEnumTshirtSizeFieldUpdateOperationsInput | $Enums.TshirtSize | null
     tshirtcolor?: NullableEnumTshirtColorFieldUpdateOperationsInput | $Enums.TshirtColor | null
     mugColor?: NullableEnumMugColorFieldUpdateOperationsInput | $Enums.MugColor | null
+    basePrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -2506,6 +2554,8 @@ export namespace Prisma {
     size?: NullableEnumTshirtSizeFieldUpdateOperationsInput | $Enums.TshirtSize | null
     tshirtcolor?: NullableEnumTshirtColorFieldUpdateOperationsInput | $Enums.TshirtColor | null
     mugColor?: NullableEnumMugColorFieldUpdateOperationsInput | $Enums.MugColor | null
+    basePrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -2528,6 +2578,8 @@ export namespace Prisma {
     size?: $Enums.TshirtSize | null
     tshirtcolor?: $Enums.TshirtColor | null
     mugColor?: $Enums.MugColor | null
+    basePrice?: number | null
+    totalPrice?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -2549,6 +2601,8 @@ export namespace Prisma {
     size?: NullableEnumTshirtSizeFieldUpdateOperationsInput | $Enums.TshirtSize | null
     tshirtcolor?: NullableEnumTshirtColorFieldUpdateOperationsInput | $Enums.TshirtColor | null
     mugColor?: NullableEnumMugColorFieldUpdateOperationsInput | $Enums.MugColor | null
+    basePrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -2570,6 +2624,8 @@ export namespace Prisma {
     size?: NullableEnumTshirtSizeFieldUpdateOperationsInput | $Enums.TshirtSize | null
     tshirtcolor?: NullableEnumTshirtColorFieldUpdateOperationsInput | $Enums.TshirtColor | null
     mugColor?: NullableEnumMugColorFieldUpdateOperationsInput | $Enums.MugColor | null
+    basePrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -2692,6 +2748,18 @@ export namespace Prisma {
     isSet?: boolean
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+    isSet?: boolean
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -2721,6 +2789,8 @@ export namespace Prisma {
     size?: SortOrder
     tshirtcolor?: SortOrder
     mugColor?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -2732,6 +2802,8 @@ export namespace Prisma {
     imagePositionY?: SortOrder
     imageDimensionWidth?: SortOrder
     imageDimensionHeight?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
   }
 
   export type ConfigurationMaxOrderByAggregateInput = {
@@ -2752,6 +2824,8 @@ export namespace Prisma {
     size?: SortOrder
     tshirtcolor?: SortOrder
     mugColor?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -2774,6 +2848,8 @@ export namespace Prisma {
     size?: SortOrder
     tshirtcolor?: SortOrder
     mugColor?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -2785,6 +2861,8 @@ export namespace Prisma {
     imagePositionY?: SortOrder
     imageDimensionWidth?: SortOrder
     imageDimensionHeight?: SortOrder
+    basePrice?: SortOrder
+    totalPrice?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -2945,6 +3023,23 @@ export namespace Prisma {
     isSet?: boolean
   }
 
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3022,6 +3117,15 @@ export namespace Prisma {
 
   export type NullableEnumMugColorFieldUpdateOperationsInput = {
     set?: $Enums.MugColor | null
+    unset?: boolean
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
     unset?: boolean
   }
 
@@ -3145,6 +3249,18 @@ export namespace Prisma {
     isSet?: boolean
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+    isSet?: boolean
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -3246,18 +3362,6 @@ export namespace Prisma {
     isSet?: boolean
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-    isSet?: boolean
-  }
-
   export type NestedEnumCaseColorNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.CaseColor | EnumCaseColorFieldRefInput<$PrismaModel> | null
     in?: $Enums.CaseColor[] | ListEnumCaseColorFieldRefInput<$PrismaModel> | null
@@ -3332,6 +3436,23 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumMugColorNullableFilter<$PrismaModel>
     _max?: NestedEnumMugColorNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
