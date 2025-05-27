@@ -1,5 +1,7 @@
+// app/(routes)/catalog/[configId]/[product]/preview/page.tsx
+
 import PhonePreview from "@/app/(routes)/_components/Product/PhoneCase/PhonePreview";
-import { prismadb } from "@/lib/prismadb"; // Bu dosyada sadece @prisma/client kullanıldığından emin ol
+import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -7,36 +9,57 @@ import React from "react";
 interface PreviewPageProps {
   params: {
     configId: string;
-    product: string;
+    product: string; // "phone", "tshirt", "mug" gibi değerler alacak
   };
 }
 
 const PreviewPage = async ({ params }: PreviewPageProps) => {
-  const configId = params.configId;
+  // params objesini await ile bekleyin
+  const { configId, product } = await params; // <-- Düzeltme burada!
 
+  // configId'nin geçerli bir MongoDB ObjectId olup olmadığını kontrol edin
   if (!isValidObjectId(configId)) {
-    return notFound();
+    return notFound(); // Geçersiz ID ise 404 sayfasına yönlendir
   }
 
+  // Veritabanından konfigürasyonları çekin
   const configurations = await prismadb.configuration.findUnique({
     where: { id: configId },
   });
 
+  // Konfigürasyon bulunamazsa 404 sayfasına yönlendir
   if (!configurations) {
     return notFound();
   }
 
-  if (params.product === "phone") {
+  // product parametresine göre doğru önizleme bileşenini render edin
+  // NOT: "phone" yerine "phoneCase" gibi enum değerleriniz varsa
+  // onu kullanmak daha iyi olacaktır. Aşağıdaki örnek "phoneCase" kullanır.
+  // Eğer hala "phone" olarak tutuyorsanız, o şekilde bırakın.
+  if (product === "phone") {
+    // Eğer "phone" ise, product === "phone" olarak bırakın
     return (
       <div>
         <PhonePreview configurations={configurations} />
       </div>
     );
-  } else if (params.product === "mug") {
-    return <div>mug</div>;
-  } else if (params.product === "tshirt") {
-    return <div>tshirt</div>;
+  } else if (product === "mug") {
+    return (
+      <div>
+        {/* <MugPreview configurations={configurations} /> */}
+        mug {/* Şimdilik placeholder, kendi MugPreview bileşeninizi kullanın */}
+      </div>
+    );
+  } else if (product === "tshirt") {
+    return (
+      <div>
+        {/* <TshirtPreview configurations={configurations} /> */}
+        tshirt{" "}
+        {/* Şimdilik placeholder, kendi TshirtPreview bileşeninizi kullanın */}
+      </div>
+    );
   } else {
+    // Tanınmayan bir ürün tipi ise 404 sayfasına yönlendir
     return notFound();
   }
 };

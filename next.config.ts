@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "unxua7apqj.ufs.sh",
         pathname: "/**", // tüm yolları kapsar
       },
+      {
+        protocol: "https",
+        hostname: "utfs.io", // Burası önemli
+        pathname: "/**",
+      },
     ],
   },
 
