@@ -8,7 +8,10 @@ interface PhoneDesign extends HTMLAttributes<HTMLDivElement> {
 const PhoneDesign = ({ imgSrc, className, ...props }: PhoneDesign) => {
   return (
     <div
-      className={cn("relative pointer-events-none z-50 overflow-hidden")}
+      className={cn(
+        "relative pointer-events-none z-45 overflow-hidden",
+        className
+      )}
       {...props}
     >
       <Image
@@ -24,6 +27,7 @@ const PhoneDesign = ({ imgSrc, className, ...props }: PhoneDesign) => {
           height={1831}
           alt=""
           src={imgSrc || "/phone-template.png"}
+          className="object-cover min-w-full min-h-full"
         />
       </div>
     </div>
