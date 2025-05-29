@@ -9,10 +9,10 @@ export const isValidObjectId = (id: string) => {
   return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
-export const formatPrice = (price: number) => {
+export const formatPrice = (price: number | null) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
-  return formatter.format(price);
+  return formatter.format(price ?? 0);
 };
