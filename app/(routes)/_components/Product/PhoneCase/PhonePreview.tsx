@@ -89,7 +89,7 @@ const PhonePreview = ({ configurations }: PhonePreviewProps) => {
                 <div className="flex items-center justify-between py-1 mt-2">
                   <p className="text-gray-700">Base Price</p>
                   <p className="font-semibold text-gray-900">
-                    {formatPrice(basePrice ?? 0)}
+                    {formatPrice(basePrice)}
                   </p>
                 </div>
                 <div className="flex items-center justify-between py-1 mt-2">
@@ -102,7 +102,7 @@ const PhonePreview = ({ configurations }: PhonePreviewProps) => {
                 <div className="flex items-center justify-between py-1 mt-2">
                   <p className="text-gray-700">Total Price</p>
                   <p className="font-semibold text-gray-900">
-                    {formatPrice(totalPrice ?? 0)}
+                    {formatPrice(totalPrice)}
                   </p>
                 </div>
               </div>

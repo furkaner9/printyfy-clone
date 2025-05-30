@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const HowToWorkPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div>how to work page</div>;
+};
 
-export default HowToWorkPage
+export default HowToWorkPage;
