@@ -6,7 +6,6 @@ import {
 } from "@/app/(routes)/_components/Product/PhoneCase/PhoneAction"; // Bu yolu kontrol edin!
 
 export async function POST(req: Request) {
-  // Sadece POST metodu
   try {
     const body = await req.json();
 
@@ -23,6 +22,8 @@ export async function POST(req: Request) {
       imageY,
       imageWidth,
       imageHeight,
+      basePrice, // eklendi
+      totalPrice, // eklendi
     } = body;
 
     // saveConfig fonksiyonuna göndereceğiniz argümanları oluşturun
@@ -38,6 +39,8 @@ export async function POST(req: Request) {
       imageY,
       imageWidth,
       imageHeight,
+      basePrice,
+      totalPrice,
     };
 
     // Sunucu tarafı fonksiyonunu çağırın
@@ -49,9 +52,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    // Hata durumunda konsola loglayın ve hata yanıtı gönderin
     console.error("API Hatası:", error);
-    // Hatanın türünü kontrol etmek iyi bir pratik olabilir
     let errorMessage = "Yapılandırma kaydedilirken bilinmeyen bir hata oluştu.";
     if (error instanceof Error) {
       errorMessage = error.message;

@@ -1,28 +1,26 @@
 import PhoneDesingConfig from "@/app/(routes)/_components/Product/PhoneCase/PhoneDesingConfig";
+import TshirtDesignConfig from "@/app/(routes)/_components/Product/Tshirt/TshirtDesignConfig";
 import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 
 interface ProductPageProps {
-  params: Promise<{
+  params: {
     configId: string;
     product: string;
-  }>;
+  };
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
-  const resolvedParams = await params;
-  const { configId } = resolvedParams;
+  const { configId, product } = params;
 
   if (!isValidObjectId(configId)) {
     return notFound();
   }
 
   const configuration = await prismadb.configuration.findUnique({
-    where: {
-      id: configId,
-    },
+    where: { id: configId },
   });
 
   if (!configuration) {
@@ -31,21 +29,32 @@ const ProductPage = async ({ params }: ProductPageProps) => {
 
   const { imageUrl, width, height, id } = configuration;
 
-  if ((await params).product === "phone") {
-    return (
-      <PhoneDesingConfig
-        configId={id}
-        imageDimensions={{ width, height }}
-        imageUrl={imageUrl}
-        productType="phoneCase"
-      />
-    );
-  } else if ((await params).product === "mug") {
-    return <div>mug</div>;
-  } else if ((await params).product === "tshirt") {
-    return <div>tshirt</div>;
-  } else {
-    return notFound();
+  switch (product) {
+    case "phone":
+      return (
+        <PhoneDesingConfig
+          configId={id}
+          imageDimensions={{ width, height }}
+          imageUrl={imageUrl}
+          productType="phoneCase"
+        />
+      );
+
+    case "tshirt":
+      return (
+        <TshirtDesignConfig
+          configId={id}
+          imageDimensions={{ width, height }}
+          imageUrl={imageUrl}
+          productType="tshirt"
+        />
+      );
+
+    case "mug":
+      return <div>mug</div>; // mug tasarım bileşeni eklenecek
+
+    default:
+      return notFound();
   }
 };
 
