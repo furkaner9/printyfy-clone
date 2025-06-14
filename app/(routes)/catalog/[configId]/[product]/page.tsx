@@ -5,27 +5,20 @@ import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import React from "react";
 
-interface ProductPageProps {
-  params: {
-    configId: string;
-    product: string;
-  };
-}
-
-const ProductPage = async ({ params }: ProductPageProps) => {
+const ProductPage = async ({
+  params,
+}: {
+  params: { configId: string; product: string };
+}) => {
   const { configId, product } = params;
 
-  if (!isValidObjectId(configId)) {
-    return notFound();
-  }
+  if (!isValidObjectId(configId)) return notFound();
 
   const configuration = await prismadb.configuration.findUnique({
     where: { id: configId },
   });
 
-  if (!configuration) {
-    return notFound();
-  }
+  if (!configuration) return notFound();
 
   const { imageUrl, width, height, id } = configuration;
 
@@ -51,7 +44,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
       );
 
     case "mug":
-      return <div>mug</div>; // mug tasarım bileşeni eklenecek
+      return <div>mug</div>;
 
     default:
       return notFound();

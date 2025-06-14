@@ -1,62 +1,82 @@
-// app/api/save-config/route.ts
 import { NextResponse } from "next/server";
 import {
-  saveConfig,
-  SaveConfigArgs,
-} from "@/app/(routes)/_components/Product/PhoneCase/PhoneAction"; // Bu yolu kontrol edin!
+  saveConfig as savePhoneConfig,
+  SaveConfigArgs as PhoneSaveConfigArgs,
+} from "@/app/(routes)/_components/Product/PhoneCase/PhoneAction";
+
+import {
+  saveConfig as saveTshirtConfig,
+  SaveConfigArgs as TshirtSaveConfigArgs,
+} from "@/app/(routes)/_components/Product/Tshirt/TshirtAction"; // yolu kontrol et
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const { type } = body;
 
-    // İstek gövdesinden gelen verileri güvenli bir şekilde alın
-    const {
-      configId,
-      casecolor,
-      casefinish,
-      casematerial,
-      casemodel,
-      type,
-      croppedImageUrl,
-      imageX,
-      imageY,
-      imageWidth,
-      imageHeight,
-      basePrice, // eklendi
-      totalPrice, // eklendi
-    } = body;
+    if (type === "PHONE_CASE") {
+      const {
+        configId,
+        casecolor,
+        casefinish,
+        casematerial,
+        casemodel,
+        croppedImageUrl,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight,
+        basePrice,
+        totalPrice,
+      } = body;
 
-    // saveConfig fonksiyonuna göndereceğiniz argümanları oluşturun
-    const args: SaveConfigArgs = {
-      configId,
-      casecolor,
-      casefinish,
-      casematerial,
-      casemodel,
-      type,
-      croppedImageUrl,
-      imageX,
-      imageY,
-      imageWidth,
-      imageHeight,
-      basePrice,
-      totalPrice,
-    };
+      const args: PhoneSaveConfigArgs = {
+        configId,
+        casecolor,
+        casefinish,
+        casematerial,
+        casemodel,
+        type,
+        croppedImageUrl,
+        imageX,
+        imageY,
+        imageWidth,
+        imageHeight,
+        basePrice,
+        totalPrice,
+      };
 
-    // Sunucu tarafı fonksiyonunu çağırın
-    await saveConfig(args);
+      await savePhoneConfig(args);
+    } else if (type === "TSHIRT") {
+      const { configId, tshirtcolor, size, basePrice, totalPrice } = body;
 
-    // Başarılı yanıt gönderin
+      const args: TshirtSaveConfigArgs = {
+        configId,
+        tshirtcolor,
+        size,
+        type,
+        basePrice,
+        totalPrice,
+      };
+
+      await saveTshirtConfig(args);
+    } else {
+      return NextResponse.json(
+        { error: "Geçersiz ürün tipi!" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { message: "Yapılandırma başarıyla kaydedildi!" },
       { status: 200 }
     );
   } catch (error) {
     console.error("API Hatası:", error);
-    let errorMessage = "Yapılandırma kaydedilirken bilinmeyen bir hata oluştu.";
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Yapılandırma kaydedilirken bilinmeyen bir hata oluştu.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
