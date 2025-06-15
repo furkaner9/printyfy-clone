@@ -7,11 +7,27 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
 import { Rnd } from "react-rnd";
 import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { RadioGroup } from "@headlessui/react";
 
 import { TSHİRT_BASE_PRİCE, TColor, TSize } from "./Tshirt";
 import HandleComponent from "../HandleComponent";
 import { SaveConfigArgs } from "./TshirtAction";
 import { TshirtColor, TshirtSize, ProductType } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { cn, formatPrice } from "@/lib/utils";
+import { set } from "zod";
 
 interface TshirtDesignConfigProps {
   configId: string;
@@ -151,76 +167,138 @@ const TshirtDesignConfig = ({
   });
 
   return (
-    <div ref={containerRef} className="relative w-full h-[600px] bg-gray-100">
-      <div
-        ref={tshirtRef}
-        className="relative mx-auto w-[300px] h-[500px] overflow-hidden"
-      >
-        <Image
-          src={options.color.timage}
-          alt="Tshirt"
-          fill
-          className="object-contain"
-        />
+    <div className="container mx-auto px-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-20 mb-20 pb-20">
+        {/* Sol: Tişört tasarım alanı */}
+        <div className="col-span-2 flex justify-center items-center h-[600px] bg-slate-100 border border-gray-300 rounded-lg p-6 relative">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-[300px] aspect-[770/1600]">
+              {/* Tişört görseli */}
+              <AspectRatio
+                ratio={770 / 1600}
+                className="w-full h-full relative"
+              >
+                <Image
+                  alt="T-shirt"
+                  src={options.color.timage}
+                  fill
+                  className="object-contain select-none pointer-events-none"
+                />
+              </AspectRatio>
+              <Rnd
+                bounds="parent"
+                default={{
+                  x: 0,
+                  y: 0,
+                  height: imageDimensions.height / 4,
+                  width: imageDimensions.width / 4,
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  console.log("Resize stopped", position);
+                  console.log("Resise stop-Dimensions", {
+                    height: parseInt(ref.style.height.slice(0, -2)),
+                    width: parseInt(ref.style.width.slice(0, -2)),
+                  });
+                  setRenderedDimension({
+                    height: parseInt(ref.style.height.slice(0, -2)),
+                    width: parseInt(ref.style.width.slice(0, -2)),
+                  });
 
-        <Rnd
-          bounds="parent"
-          size={renderedDimension}
-          position={renderedPosition}
-          onDragStop={(_, d) => setRenderedPosition({ x: d.x, y: d.y })}
-          onResizeStop={(_, __, ref, ___, position) => {
-            setRenderedDimension({
-              width: parseFloat(ref.style.width),
-              height: parseFloat(ref.style.height),
-            });
-            setRenderedPosition(position);
-          }}
-          enableResizing
-          lockAspectRatio
-          className="z-10"
-          resizeHandleComponent={{
-            bottomRight: <HandleComponent />,
-          }}
-        >
-          <Image src={imageUrl} alt="Preview" fill className="object-contain" />
-        </Rnd>
-      </div>
+                  setRenderedPosition(position);
+                }}
+                onDragStop={(e, data) => {
+                  const { x, y } = data;
+                  setRenderedPosition({ x, y });
+                }}
+                className="absolute z-30 border-[3px] border-primary"
+                lockAspectRatio
+                resizeHandleComponent={{
+                  bottomRight: <HandleComponent />,
+                  bottomLeft: <HandleComponent />,
+                  topRight: <HandleComponent />,
+                  topLeft: <HandleComponent />,
+                }}
+              >
+                <Image
+                  src={imageUrl}
+                  fill
+                  alt="your image"
+                  className="pointer-events-none"
+                  style={{
+                    clipPath: "inset(0% round 0px)",
+                  }}
+                />
+              </Rnd>
 
-      <div className="flex flex-col items-center mt-4 space-y-4">
-        <div className="flex gap-2">
-          {TColor.map((c) => (
-            <button
-              key={c.value}
-              className={`w-10 h-10 rounded-full border-2 ${c.tw} ${
-                options.color.value === c.value ? c.twborder : "border-gray-300"
-              }`}
-              onClick={() => setOptions((prev) => ({ ...prev, color: c }))}
-            />
-          ))}
+              {/* Tasarım alanı */}
+              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
+                <div className="w-[150px] h-[280px] border-2 border-white" />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex gap-2">
-          {TSize.map((s) => (
-            <button
-              key={s.value}
-              className={`px-3 py-1 border rounded ${
-                options.size.value === s.value
-                  ? "bg-black text-white"
-                  : "bg-white text-black"
-              }`}
-              onClick={() => setOptions((prev) => ({ ...prev, size: s }))}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
 
-        <button
-          onClick={() => saveConfigMutation()}
-          disabled={isPending}
-          className="mt-4 px-6 py-2 bg-black text-white rounded hover:bg-gray-800"
-        >
-          {isPending ? "Kaydediliyor..." : "Kaydet"}
-        </button>
+        {/* Sağ: Ayarlar paneli */}
+        <div className="h-[600px] bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden">
+          <ScrollArea className="flex-1 overflow-auto">
+            <div className="px-8 py-8">
+              <h2 className="text-2xl font-semibold mb-6">
+                Customize your case
+              </h2>
+
+              <div className="flex flex-col gap-6">
+                <RadioGroup
+                  value={options.color}
+                  onChange={(val) => {
+                    setOptions((prev) => ({ ...prev, color: val }));
+                  }}
+                >
+                  <Label>Color: {options.color.label}</Label>
+                  <div className="flex flex-row gap-4 mt-4">
+                    {TColor.map((color) => (
+                      <RadioGroup.Option
+                        key={color.label}
+                        value={color}
+                        className={({ active, checked }) =>
+                          cn(
+                            "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full border-2 p-0.5",
+                            {
+                              "ring-2 ring-offset-2 ring-black":
+                                active || checked,
+                            }
+                          )
+                        }
+                      >
+                        <span
+                          className={cn(
+                            "h-8 w-8 rounded-full border border-black border-opacity-10",
+                            color.tw
+                          )}
+                        />
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+          </ScrollArea>
+
+          <div className="border-t border-gray-200 px-8 h-16 bg-white flex items-center justify-end">
+            <div className="w-full flex justify-between items-center">
+              <p className="font-semibold">{formatPrice(TSHİRT_BASE_PRİCE)}</p>
+              <Button
+                variant="mybutton"
+                size="sm"
+                className="w-40"
+                disabled={isPending}
+                onClick={() => saveConfigMutation()}
+              >
+                Continue
+                <ArrowRight className="h-4 w-4 ml-1 inline" />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
