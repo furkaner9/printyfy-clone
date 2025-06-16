@@ -1,6 +1,7 @@
 // app/(routes)/catalog/[configId]/[product]/preview/page.tsx
 
 import PhonePreview from "@/app/(routes)/_components/Product/PhoneCase/PhonePreview";
+import TshirtPreview from "@/app/(routes)/_components/Product/Tshirt/TshirtPreview";
 import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -53,9 +54,7 @@ const PreviewPage = async ({ params }: PreviewPageProps) => {
   } else if (product === "tshirt") {
     return (
       <div>
-        {/* <TshirtPreview configurations={configurations} /> */}
-        tshirt{" "}
-        {/* Şimdilik placeholder, kendi TshirtPreview bileşeninizi kullanın */}
+       <TshirtPreview configurations={configurations} />
       </div>
     );
   } else {

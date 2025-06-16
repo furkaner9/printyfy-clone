@@ -23,11 +23,9 @@ import { RadioGroup } from "@headlessui/react";
 
 import { TSHİRT_BASE_PRİCE, TColor, TSize } from "./Tshirt";
 import HandleComponent from "../HandleComponent";
-import { SaveConfigArgs } from "./TshirtAction";
 import { TshirtColor, TshirtSize, ProductType } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
-import { set } from "zod";
 
 interface TshirtDesignConfigProps {
   configId: string;
@@ -57,7 +55,7 @@ const TshirtDesignConfig = ({
   });
 
   const tshirtRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null); // Bu ref'in de JSX içinde bir div'e bağlı olduğundan emin olun
 
   const [options, setOptions] = useState<{
     color: (typeof TColor)[number];
@@ -70,15 +68,31 @@ const TshirtDesignConfig = ({
   const { startUpload } = useUploadThing("imageUploader");
 
   async function processAndUploadImage(): Promise<string> {
+    // Referansların null olup olmadığını kontrol edin ve konsola yazdırın
+    console.log("processAndUploadImage çağrıldı.");
+    console.log("tshirtRef.current değeri:", tshirtRef.current);
+    console.log("containerRef.current değeri:", containerRef.current);
+
+    // tshirtRef.current veya containerRef.current null ise hata fırlat
+    if (!tshirtRef.current || !containerRef.current) {
+      console.error(
+        "HATA: tshirtRef.current veya containerRef.current null. DOM'a bağlanmamış olabilir."
+      );
+      throw new Error(
+        "Tişört veya konteyner referansı bulunamadı. Lütfen sayfanın tamamen yüklendiğinden emin olun."
+      );
+    }
+
+    // Artık '!' operatörünü güvenle kullanabiliriz çünkü null kontrolü yapıldı
     const {
       left: tshirtLeft,
       top: tshirtTop,
       width,
       height,
-    } = tshirtRef.current!.getBoundingClientRect();
+    } = tshirtRef.current.getBoundingClientRect();
 
     const { left: containerLeft, top: containerTop } =
-      containerRef.current!.getBoundingClientRect();
+      containerRef.current.getBoundingClientRect();
 
     const actualX = renderedPosition.x - (tshirtLeft - containerLeft);
     const actualY = renderedPosition.y - (tshirtTop - containerTop);
@@ -129,18 +143,25 @@ const TshirtDesignConfig = ({
   }
 
   const { mutate: saveConfigMutation, isPending } = useMutation({
-    mutationKey: ["save-tshirt-config"],
+    mutationKey: ["save-config"],
     mutationFn: async () => {
+      // processAndUploadImage fonksiyonunun içindeki null kontrolünü yaptığınızdan emin olun.
       const croppedImageUrl = await processAndUploadImage();
 
-      const payload: SaveConfigArgs = {
+      const payload = {
         configId,
         tshirtcolor: options.color.value as TshirtColor,
         size: options.size.value as TshirtSize,
+        // productType prop'unun 'tshirt' (küçük harf) olduğundan emin olun.
+        // API'niz 'tshirt' bekliyor.
         type: productType as ProductType,
         basePrice: TSHİRT_BASE_PRİCE,
-        totalPrice: TSHİRT_BASE_PRİCE,
+        totalPrice: TSHİRT_BASE_PRİCE, // Tişört fiyatlandırmanızda değişiklik varsa burayı güncelleyin
+        croppedImageUrl,
       };
+
+      // API'ye gönderilmeden hemen önce payload'ı konsola yazdırın
+      console.log("API'ye gönderilen tişört payload'ı:", payload);
 
       const response = await fetch("/api/save-config", {
         method: "POST",
@@ -151,17 +172,23 @@ const TshirtDesignConfig = ({
       });
 
       if (!response.ok) {
+        // Sunucudan gelen hata yanıtını yakalayın ve loglayın.
         const errorData = await response.json();
-        throw new Error(errorData.error || "Yapılandırma kaydedilemedi.");
+        console.error("API'den hata yanıtı alındı:", errorData);
+        throw new Error(
+          errorData.error ||
+            "Yapılandırma kaydedilirken bilinmeyen bir hata oluştu."
+        );
       }
 
       return response.json();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(`Hata oluştu: ${error.message}`);
+      console.error("Mutasyon başarısız oldu (onError):", error);
     },
     onSuccess: () => {
-      toast.success("Tişört yapılandırmanız kaydedildi!");
+      toast.success("Tişört yapılandırmanız başarıyla kaydedildi!");
       router.push(`/catalog/${configId}/tshirt/preview`);
     },
   });
@@ -170,10 +197,17 @@ const TshirtDesignConfig = ({
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-20 mb-20 pb-20">
         {/* Sol: Tişört tasarım alanı */}
-        <div className="col-span-2 flex justify-center items-center h-[600px] bg-slate-100 border border-gray-300 rounded-lg p-6 relative">
+        {/* containerRef'in buraya atanmış olduğundan emin olun */}
+        <div
+          ref={containerRef}
+          className="col-span-2 flex justify-center items-center h-[600px] bg-slate-100 border border-gray-300 rounded-lg p-6 relative"
+        >
           <div className="relative w-full h-full flex items-center justify-center">
-            <div className="relative w-[300px] aspect-[770/1600]">
-              {/* Tişört görseli */}
+            {/* tshirtRef'in buraya atanmış olduğundan emin olun */}
+            <div
+              ref={tshirtRef}
+              className="relative w-[300px] aspect-[770/1600]"
+            >
               <AspectRatio
                 ratio={770 / 1600}
                 className="w-full h-full relative"
@@ -182,9 +216,11 @@ const TshirtDesignConfig = ({
                   alt="T-shirt"
                   src={options.color.timage}
                   fill
+                  sizes="770/1600"
                   className="object-contain select-none pointer-events-none"
                 />
               </AspectRatio>
+
               <Rnd
                 bounds="parent"
                 default={{
@@ -194,16 +230,10 @@ const TshirtDesignConfig = ({
                   width: imageDimensions.width / 4,
                 }}
                 onResizeStop={(e, direction, ref, delta, position) => {
-                  console.log("Resize stopped", position);
-                  console.log("Resise stop-Dimensions", {
-                    height: parseInt(ref.style.height.slice(0, -2)),
-                    width: parseInt(ref.style.width.slice(0, -2)),
-                  });
                   setRenderedDimension({
-                    height: parseInt(ref.style.height.slice(0, -2)),
-                    width: parseInt(ref.style.width.slice(0, -2)),
+                    height: parseInt(ref.style.height),
+                    width: parseInt(ref.style.width),
                   });
-
                   setRenderedPosition(position);
                 }}
                 onDragStop={(e, data) => {
@@ -224,9 +254,6 @@ const TshirtDesignConfig = ({
                   fill
                   alt="your image"
                   className="pointer-events-none"
-                  style={{
-                    clipPath: "inset(0% round 0px)",
-                  }}
                 />
               </Rnd>
 
@@ -239,7 +266,7 @@ const TshirtDesignConfig = ({
         </div>
 
         {/* Sağ: Ayarlar paneli */}
-        <div className="h-[600px] bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden">
+        <div className="h-[600px] bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden ">
           <ScrollArea className="flex-1 overflow-auto">
             <div className="px-8 py-8">
               <h2 className="text-2xl font-semibold mb-6">
@@ -280,6 +307,48 @@ const TshirtDesignConfig = ({
                   </div>
                 </RadioGroup>
               </div>
+
+              <div className="relative flex flex-col gap-3 w-full mt-6">
+                <Label>Size</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="w-full justify-between"
+                    >
+                      {options.size.label}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {TSize.map((size) => (
+                      <DropdownMenuItem
+                        key={size.label}
+                        onClick={() => {
+                          setOptions((prev) => ({ ...prev, size }));
+                        }}
+                        className={cn(
+                          "flex w-96 md:w-72 sm:w-72 xl:w-96 text-sm items-center",
+                          {
+                            "bg-zinc-200": size.label === options.size.label,
+                          }
+                        )}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            size.label === options.size.label
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {size.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </ScrollArea>
 
@@ -291,7 +360,10 @@ const TshirtDesignConfig = ({
                 size="sm"
                 className="w-40"
                 disabled={isPending}
-                onClick={() => saveConfigMutation()}
+                onClick={() => {
+                  console.log("Continue clicked");
+                  saveConfigMutation();
+                }}
               >
                 Continue
                 <ArrowRight className="h-4 w-4 ml-1 inline" />

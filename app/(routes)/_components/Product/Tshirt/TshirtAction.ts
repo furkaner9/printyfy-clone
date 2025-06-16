@@ -8,6 +8,7 @@ export type SaveConfigArgs = {
   type: ProductType;
   basePrice: number;
   totalPrice: number;
+  croppedImageUrl?: string;
 };
 
 export async function saveConfig({
@@ -17,6 +18,7 @@ export async function saveConfig({
   totalPrice,
   tshirtcolor,
   type,
+  croppedImageUrl, // 🔥 Parametreye ekle
 }: SaveConfigArgs) {
   await prismadb.configuration.update({
     where: { id: configId },
@@ -26,6 +28,7 @@ export async function saveConfig({
       type,
       basePrice,
       totalPrice,
+      croppedImageUrl, // 🔥 Veritabanına yaz
     },
   });
 }

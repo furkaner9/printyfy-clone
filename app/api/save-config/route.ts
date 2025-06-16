@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { type } = body;
 
-    if (type === "PHONE_CASE") {
+    if (type === "phoneCase") {
       const {
         configId,
         casecolor,
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       };
 
       await savePhoneConfig(args);
-    } else if (type === "TSHIRT") {
+    } else if (type === "tshirt") {
       const { configId, tshirtcolor, size, basePrice, totalPrice } = body;
 
       const args: TshirtSaveConfigArgs = {

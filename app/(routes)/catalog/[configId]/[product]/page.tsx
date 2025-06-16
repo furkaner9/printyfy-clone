@@ -3,13 +3,18 @@ import TshirtDesignConfig from "@/app/(routes)/_components/Product/Tshirt/Tshirt
 import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
-import React from "react";
 
-const ProductPage = async ({
-  params,
-}: {
-  params: { configId: string; product: string };
-}) => {
+// --- IMPORTANT CHANGE HERE ---
+// params will be a Promise<T>
+interface ProductPageProps {
+  params: Promise<{ configId: string; product: string }>;
+}
+
+export default async function ProductPage({
+  params: paramsPromise,
+}: ProductPageProps) {
+  // Await the promise to get the actual params object
+  const params = await paramsPromise;
   const { configId, product } = params;
 
   if (!isValidObjectId(configId)) return notFound();
@@ -22,7 +27,7 @@ const ProductPage = async ({
 
   const { imageUrl, width, height, id } = configuration;
 
-  switch (product) {
+  switch (product.toLowerCase()) {
     case "phone":
       return (
         <PhoneDesingConfig
@@ -44,11 +49,9 @@ const ProductPage = async ({
       );
 
     case "mug":
-      return <div>mug</div>;
+      return <div>Mug tasarımı yakında</div>;
 
     default:
       return notFound();
   }
-};
-
-export default ProductPage;
+}
