@@ -1,5 +1,6 @@
 // app/(routes)/catalog/[configId]/[product]/preview/page.tsx
 
+import MugPreview from "@/app/(routes)/_components/Product/Mug/MugPreview";
 import PhonePreview from "@/app/(routes)/_components/Product/PhoneCase/PhonePreview";
 import TshirtPreview from "@/app/(routes)/_components/Product/Tshirt/TshirtPreview";
 import { prismadb } from "@/lib/prismadb";
@@ -47,14 +48,13 @@ const PreviewPage = async ({ params }: PreviewPageProps) => {
   } else if (product === "mug") {
     return (
       <div>
-        {/* <MugPreview configurations={configurations} /> */}
-        mug {/* Şimdilik placeholder, kendi MugPreview bileşeninizi kullanın */}
+        <MugPreview configurations={configurations} />
       </div>
     );
   } else if (product === "tshirt") {
     return (
       <div>
-       <TshirtPreview configurations={configurations} />
+        <TshirtPreview configurations={configurations} />
       </div>
     );
   } else {

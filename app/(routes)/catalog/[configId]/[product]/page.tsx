@@ -1,3 +1,4 @@
+import MugDesignConfig from "@/app/(routes)/_components/Product/Mug/MugDesignConfig";
 import PhoneDesingConfig from "@/app/(routes)/_components/Product/PhoneCase/PhoneDesingConfig";
 import TshirtDesignConfig from "@/app/(routes)/_components/Product/Tshirt/TshirtDesignConfig";
 import { prismadb } from "@/lib/prismadb";
@@ -49,7 +50,14 @@ export default async function ProductPage({
       );
 
     case "mug":
-      return <div>Mug tasarımı yakında</div>;
+      return (
+        <MugDesignConfig
+          configId={id}
+          imageDimensions={{ width, height }}
+          imageUrl={imageUrl}
+          productType="mug"
+        />
+      );
 
     default:
       return notFound();

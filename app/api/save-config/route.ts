@@ -60,6 +60,25 @@ export async function POST(req: Request) {
       };
 
       await saveTshirtConfig(args);
+    } else if (type === "mug") {
+      const { configId, mugColor, basePrice, totalPrice } = body;
+
+      // Import the saveConfig function from MugActions
+      const {
+        saveConfig,
+      } = require("@/app/(routes)/_components/Product/Mug/MugActions");
+
+      // Create the arguments object
+      const args = {
+        configId,
+        mugColor,
+        type,
+        basePrice,
+        totalPrice,
+      };
+
+      // Call the saveConfig function with the arguments
+      await saveConfig(args);
     } else {
       return NextResponse.json(
         { error: "Geçersiz ürün tipi!" },
