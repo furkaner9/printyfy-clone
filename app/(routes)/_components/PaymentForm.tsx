@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { register } from "module";
 import axios from "axios";
 import { PhoneNumber } from "@clerk/nextjs/server";
+import { useAuth } from "@clerk/nextjs";
 interface PaymentFormProps {
   configId: string;
   product: string; // "phone", "tshirt", "mug" gibi değerler alacak
@@ -77,6 +78,7 @@ const PaymentForm = ({
     { label: "Stripe", value: "stripe", imgSrc: "/stripe.jpg" },
     { label: "Iyzico", value: "iyzico", imgSrc: "/iyzico.jpg" },
   ];
+  const { getToken } = useAuth();
 
   const form = useForm<z.infer<typeof paymentSchema>>({
     resolver: zodResolver(paymentSchema),
@@ -100,13 +102,35 @@ const PaymentForm = ({
     name: "paymentMethod",
   });
   const onSubmit = async (data: z.infer<typeof paymentSchema>) => {
-    if (
-      data.paymentMethod === "iyzico" &&
-      data.cardNumber &&
-      data.expiryDate &&
-      data.cvv
-    ) {
-      try {
+    try {
+      const token = await getToken(); // Clerk JWT Token
+      if (!token) {
+        console.error("Token alınamadı");
+        return;
+      }
+
+      const orderData = {
+        configurationId: configId,
+        userId,
+        amount: totalPrice,
+        paidType: data.paymentMethod,
+        status: "waiting",
+        address: {
+          name: data.name,
+          street: data.street,
+          city: data.city,
+          postalCode: data.postalCode,
+          state: data.state,
+          phoneNumber: data.phoneNumber, // ✅ DÜZELTİLDİ
+        },
+      };
+
+      if (
+        data.paymentMethod === "iyzico" &&
+        data.cardNumber &&
+        data.expiryDate &&
+        data.cvv
+      ) {
         const [month, year] = data.expiryDate.split("/");
 
         const paymentCard = {
@@ -115,7 +139,7 @@ const PaymentForm = ({
           expireMonth: month.trim(),
           expireYear: year.trim(),
           cvc: data.cvv,
-          registerCard: "0", // "registerdCard" yazım hatası düzeltildi
+          registerCard: "0",
         };
 
         const buyer = {
@@ -123,21 +147,21 @@ const PaymentForm = ({
           name: data.name,
           surname: "Eric",
           gsmNumber: data.phoneNumber,
-          email: "john.doe@example.com", // yazım düzeltildi
-          identityNumber: "74300864791", // "identitiyNumber" düzeltildi
+          email: "john.doe@example.com",
+          identityNumber: "74300864791",
           lastLoginDate: "2025-10-23 00:00:00",
           registrationAddress: `${data.state} ${data.street}`,
           ip: "85.34.78.112",
           city: data.city,
           country: data.country,
-          zipCode: data.postalCode, // tutarlılık için PascalCase veya camelCase tercih edebilirsin
+          zipCode: data.postalCode,
         };
 
         const shippingAddress = {
           contactName: data.name,
           country: data.country,
           city: data.city,
-          address: ` ${data.state} ${data.street}`,
+          address: `${data.state} ${data.street}`,
           zipCode: data.postalCode,
         };
 
@@ -145,7 +169,7 @@ const PaymentForm = ({
           contactName: data.name,
           country: data.country,
           city: data.city,
-          address: ` ${data.state} ${data.street}`,
+          address: `${data.state} ${data.street}`,
           zipCode: data.postalCode,
         };
 
@@ -167,12 +191,12 @@ const PaymentForm = ({
           basketId: "B67832",
           paymentCard,
           buyer,
-          billingAddress, // yazım düzeltildi
+          billingAddress,
           shippingAddress,
           basketItems,
         };
 
-        const response = await axios.post(
+        const iyzicoResponse = await axios.post(
           "http://localhost:3001/api/payment",
           paymentData,
           {
@@ -181,26 +205,35 @@ const PaymentForm = ({
             },
           }
         );
-        if (response.data.status === "success") {
-          const orderData = {
-            configurationId: configId,
-            userId: userId,
-            amount: totalPrice,
-            paidType: "iyzico",
-            status: "waiting",
-            address: {
-              name: data.name,
-              street: data.street,
-              city: data.city,
-              postalCode: data.postalCode,
-              state: data.state,
-              PhoneNumber: data.phoneNumber,
+
+        if (iyzicoResponse.data.status === "success") {
+          await axios.post("/api/order", orderData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
             },
-          };
+          });
+
+          router.push("/success");
         } else {
-          console.log("Error");
+          console.error("Iyzico ödeme başarısız:", iyzicoResponse.data);
         }
-      } catch (error) {}
+      }
+
+      if (data.paymentMethod === "stripe") {
+        const checkoutResponse = await axios.post(
+          "/api/checkout",
+          { orderData },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        window.location.assign(checkoutResponse.data.url);
+      }
+    } catch (error) {
+      console.error("Ödeme sırasında hata:", error);
     }
   };
 

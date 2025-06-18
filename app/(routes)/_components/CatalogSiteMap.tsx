@@ -35,7 +35,7 @@ const CatalogSiteMap = ({ params }: CatalogSiteMapProps) => {
       href: `/catalog/${params.configId}/${params.product}/checkout`,
       key: 5,
     },
-    { label: "Finish", href: `/order/${params.configId}`, key: 6 },
+    { label: "Finish", href: `/catalog/finish`, key: 6 },
   ];
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const CatalogSiteMap = ({ params }: CatalogSiteMapProps) => {
   }, [pathname]);
 
   const handleStepClick = (href: string, stepKey: number) => {
-    if (stepKey <= currentStep) {
+    if (stepKey <= currentStep && currentStep < 6) {
       router.push(href);
     }
   };
@@ -80,7 +80,7 @@ const CatalogSiteMap = ({ params }: CatalogSiteMapProps) => {
             label={step.label}
             href={step.href}
             isActive={currentStep === step.key}
-            isClickable={step.key <= currentStep}
+            isClickable={step.key <= currentStep && currentStep < 6}
             onClick={() => handleStepClick(step.href, step.key)}
           />
         ))}
