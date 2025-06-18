@@ -1,3 +1,4 @@
+import PaymentForm from "@/app/(routes)/_components/PaymentForm";
 import { prismadb } from "@/lib/prismadb";
 import { isValidObjectId } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -11,7 +12,9 @@ interface CheckoutPageProps {
 }
 
 const CheckoutPage = async ({ params }: CheckoutPageProps) => {
-  const { configId, product } = await params; // <-- Düzeltme burada!
+  // params objesini Promise.resolve içinde sarmalayın ve await edin
+  // Bu, Next.js'in uyarı mekanizmasını tatmin edecektir.
+  const { configId, product } = await Promise.resolve(params);
 
   // configId'nin geçerli bir MongoDB ObjectId olup olmadığını kontrol edin
   if (!isValidObjectId(configId)) {
@@ -29,10 +32,13 @@ const CheckoutPage = async ({ params }: CheckoutPageProps) => {
   }
 
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto">
       <div className="grid grid-cols-3 gap-3">
         <div className="md:col-span-2">
-          <div className="border bg-slate-200 p-4 mt-8 rounded-2xl"></div>
+          <div className="border bg-slate-200 p-4 mt-8 rounded-2xl">
+            <PaymentForm configId={configId} product={product} />{" "}
+            {/* Değişkenleri kullanın */}
+          </div>
         </div>
       </div>
     </div>
