@@ -134,3 +134,12 @@ model Address{
   phoneNumber   String
   orders        Order[]
 }
+
+model StripeCustomer {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @unique
+  stripeCustomerId  String   @unique  // buradaki "stripeCustumerId" yazımı yanlış, "stripeCustomerId" olmalı
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
