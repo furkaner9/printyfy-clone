@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -16,10 +16,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup } from "@headlessui/react";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
+import { register } from "module";
+import axios from "axios";
+import { PhoneNumber } from "@clerk/nextjs/server";
 interface PaymentFormProps {
   configId: string;
   product: string; // "phone", "tshirt", "mug" gibi değerler alacak
+  totalPrice: string;
+  userId: string;
 }
 const paymentSchema = z
   .object({
@@ -40,13 +45,13 @@ const paymentSchema = z
       .min(2, { message: "Phone number must be at least 2 characters" }),
     paymentMethod: z.string().min(1, { message: "Payment method is required" }),
     cardNumber: z.string().optional(),
-    expiryData: z.string().optional(),
+    expiryDate: z.string().optional(),
     cvv: z.string().optional(),
   })
   .refine(
     (data) => {
       if (data.paymentMethod === "iyzico") {
-        return data.cardNumber && data.expiryData && data.cvv;
+        return data.cardNumber && data.expiryDate && data.cvv;
       }
       return true;
     },
@@ -56,9 +61,17 @@ const paymentSchema = z
     }
   );
 
-const PaymentForm = ({ configId, product }: PaymentFormProps) => {
+const PaymentForm = ({
+  configId,
+  product,
+  totalPrice,
+  userId,
+}: PaymentFormProps) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("stripe");
+
+  const [response, setResponse] = useState(null);
+  const router = useRouter();
 
   const paymentMethods = [
     { label: "Stripe", value: "stripe", imgSrc: "/stripe.jpg" },
@@ -68,17 +81,17 @@ const PaymentForm = ({ configId, product }: PaymentFormProps) => {
   const form = useForm<z.infer<typeof paymentSchema>>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
-      name: "",
-      street: "",
-      city: "",
-      postalCode: "",
-      country: "",
-      state: "",
-      phoneNumber: "",
+      name: "Furkan",
+      street: "Yildirim",
+      city: "Bursa",
+      postalCode: "1600",
+      country: "Turkey",
+      state: "Akıncılar",
+      phoneNumber: "555444444",
       paymentMethod: "stripe",
-      cardNumber: "",
-      expiryData: "",
-      cvv: "",
+      cardNumber: "5526080000000006",
+      expiryDate: "10/29",
+      cvv: "121",
     },
   });
 
@@ -86,9 +99,110 @@ const PaymentForm = ({ configId, product }: PaymentFormProps) => {
     control: form.control,
     name: "paymentMethod",
   });
-  function onSubmit(values: z.infer<typeof paymentSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async (data: z.infer<typeof paymentSchema>) => {
+    if (
+      data.paymentMethod === "iyzico" &&
+      data.cardNumber &&
+      data.expiryDate &&
+      data.cvv
+    ) {
+      try {
+        const [month, year] = data.expiryDate.split("/");
+
+        const paymentCard = {
+          cardHolderName: data.name,
+          cardNumber: data.cardNumber,
+          expireMonth: month.trim(),
+          expireYear: year.trim(),
+          cvc: data.cvv,
+          registerCard: "0", // "registerdCard" yazım hatası düzeltildi
+        };
+
+        const buyer = {
+          id: userId,
+          name: data.name,
+          surname: "Eric",
+          gsmNumber: data.phoneNumber,
+          email: "john.doe@example.com", // yazım düzeltildi
+          identityNumber: "74300864791", // "identitiyNumber" düzeltildi
+          lastLoginDate: "2025-10-23 00:00:00",
+          registrationAddress: `${data.state} ${data.street}`,
+          ip: "85.34.78.112",
+          city: data.city,
+          country: data.country,
+          zipCode: data.postalCode, // tutarlılık için PascalCase veya camelCase tercih edebilirsin
+        };
+
+        const shippingAddress = {
+          contactName: data.name,
+          country: data.country,
+          city: data.city,
+          address: ` ${data.state} ${data.street}`,
+          zipCode: data.postalCode,
+        };
+
+        const billingAddress = {
+          contactName: data.name,
+          country: data.country,
+          city: data.city,
+          address: ` ${data.state} ${data.street}`,
+          zipCode: data.postalCode,
+        };
+
+        const basketItems = [
+          {
+            id: configId,
+            name: product,
+            category1: "Collectibles",
+            category2: "Accessories",
+            itemType: "PHYSICAL",
+            price: totalPrice,
+          },
+        ];
+
+        const paymentData = {
+          price: totalPrice,
+          paidPrice: totalPrice,
+          currency: "TRY",
+          basketId: "B67832",
+          paymentCard,
+          buyer,
+          billingAddress, // yazım düzeltildi
+          shippingAddress,
+          basketItems,
+        };
+
+        const response = await axios.post(
+          "http://localhost:3001/api/payment",
+          paymentData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status === "success") {
+          const orderData = {
+            configurationId: configId,
+            userId: userId,
+            amount: totalPrice,
+            paidType: "iyzico",
+            status: "waiting",
+            address: {
+              name: data.name,
+              street: data.street,
+              city: data.city,
+              postalCode: data.postalCode,
+              state: data.state,
+              PhoneNumber: data.phoneNumber,
+            },
+          };
+        } else {
+          console.log("Error");
+        }
+      } catch (error) {}
+    }
+  };
 
   return (
     <Form {...form}>
@@ -262,7 +376,7 @@ const PaymentForm = ({ configId, product }: PaymentFormProps) => {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="expiryData"
+                name="expiryDate"
                 rules={{ required: "Expiry date is required" }}
                 render={({ field }) => (
                   <FormItem>
