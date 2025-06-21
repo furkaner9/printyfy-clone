@@ -3,8 +3,6 @@ import React from "react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -22,7 +20,10 @@ const MobileMenu = () => {
         </div>
       </SheetTrigger>
       <SheetContent className="bg-slate-800 text-white">
-        <div className="w-full h-12 justify-center">
+        {/* Erişilebilirlik için başlık eklendi */}
+        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+
+        <div className="w-full mt-8 flex flex-col space-y-4">
           {navLinks.map((link) => (
             <Button
               asChild
@@ -30,7 +31,6 @@ const MobileMenu = () => {
               key={link.route}
               className="w-full h-12 justify-center"
             >
-              div
               <Link href={link.route}>
                 <div className="flex items-center text-white w-full gap-2 text-lg">
                   <p>{link.label}</p>

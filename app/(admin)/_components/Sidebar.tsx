@@ -7,11 +7,19 @@ import React, { useState } from "react";
 export const navLinks = [
   {
     label: "Dashboard",
-    route: "/p/dahboard",
+    route: "/p/dashboard",
   },
   {
-    label: "Order",
-    route: "/p/order",
+    label: "PhoneOrder",
+    route: "/p/phone-order",
+  },
+  {
+    label: "Mug Order",
+    route: "/p/mug-order",
+  },
+  {
+    label: "T-shirt Order",
+    route: "/p/tshirt-order",
   },
 ];
 
@@ -33,7 +41,6 @@ const Sidebar = () => {
                 key={link.route}
                 className="w-full h-12 justify-center"
               >
-                div
                 <Link href={link.route}>
                   <div className="flex items-center text-white w-full gap-2 text-lg">
                     <p>{link.label}</p>

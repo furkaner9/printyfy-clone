@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { HTMLAttributes } from "react";
 interface PhoneDesign extends HTMLAttributes<HTMLDivElement> {
-  imgSrc: string | null;
+  imgSrc: string | null | undefined;
 }
 
 const PhoneDesign = ({ imgSrc, className, ...props }: PhoneDesign) => {

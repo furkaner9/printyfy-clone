@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React, { ReactNode } from "react";
 import MobileMenu from "../_components/MobileMenu";
+import Sidebar from "../_components/Sidebar";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -18,11 +19,12 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
   }
   return (
     <div className="flex">
-      sidebar
+      <Sidebar />
+
       <div className="flex-1 h-screen flex flex-col">
         <header className="bg-gray-800 text-white flex justify-between items-center p-4">
           <div className="hidden lg:block">Admin Panel</div>
-          <MobileMenu/>
+          <MobileMenu />
           <Link href="/">
             <Button variant="mybutton">Go to Home</Button>
           </Link>

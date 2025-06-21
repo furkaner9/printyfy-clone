@@ -1,6 +1,7 @@
 import { prismadb } from "@/lib/prismadb";
 import React from "react";
 import Widget from "../../_components/Widget";
+import { Key } from "lucide-react";
 
 const DashboardPage = async () => {
   const totalConfigurations = await prismadb.configuration.count();
@@ -29,7 +30,7 @@ const DashboardPage = async () => {
     <div className="p-8 space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {Widgetdata.map((data) => (
-          <Widget label={data.label} value={data.value} />
+          <Widget key={data.label} label={data.label} value={data.value} />
         ))}
       </div>
     </div>
