@@ -112,7 +112,7 @@ const PaymentForm = ({
       const orderData = {
         configurationId: configId,
         userId,
-        amount: totalPrice,
+        amount: parseFloat(totalPrice),
         paidType: data.paymentMethod,
         status: "waiting",
         address: {
@@ -121,7 +121,8 @@ const PaymentForm = ({
           city: data.city,
           postalCode: data.postalCode,
           state: data.state,
-          phoneNumber: data.phoneNumber, // ✅ DÜZELTİLDİ
+          phoneNumber: data.phoneNumber,
+          country: data.country, // ✅ ekle
         },
       };
 
@@ -207,13 +208,13 @@ const PaymentForm = ({
         );
 
         if (iyzicoResponse.data.status === "success") {
-          await axios.post("/api/order", orderData, {
+          await axios.post("/api/saveorder", orderData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
 
-          router.push("/success");
+          router.push("/catalog/finish");
         } else {
           console.error("Iyzico ödeme başarısız:", iyzicoResponse.data);
         }
