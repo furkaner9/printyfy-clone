@@ -27,6 +27,13 @@ const PhoneModal = ({ croppedImageUrl, casecolor }: PhoneModalProps) => {
         <Eye />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px]">
+        <DialogHeader>
+          <DialogTitle>Phone Case Preview</DialogTitle>
+          <DialogDescription>
+            This is a preview of your phone case design.
+          </DialogDescription>
+        </DialogHeader>
+
         <PhoneDesign
           className={cn(
             `${tw}`,

@@ -4,21 +4,23 @@ import { OrderStatus } from "@prisma/client";
 
 export async function PATCH(request: Request) {
   try {
-    const { orderId, status } = await request.json();
+    const { orderId, status: statusStr } = await request.json();
 
-    if (typeof orderId !== "string" || typeof status !== "string") {
+    if (typeof orderId !== "string" || typeof statusStr !== "string") {
       return NextResponse.json({ message: "Invalid input" }, { status: 400 });
     }
 
-    // Enum kontrolü
-    const statusEnum = status.toUpperCase() as keyof typeof OrderStatus;
-    if (!Object.keys(OrderStatus).includes(statusEnum)) {
+    // Burada statusStr'nin enum içindeki bir değer olup olmadığını kontrol et
+    if (!Object.values(OrderStatus).includes(statusStr as OrderStatus)) {
       return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
+    // TypeScript'e statusStr'nin OrderStatus olduğunu belirt
+    const status = statusStr as OrderStatus;
+
     const updateOrder = await prismadb.order.update({
       where: { id: orderId },
-      data: { status: OrderStatus[statusEnum] },
+      data: { status },
     });
 
     return NextResponse.json(updateOrder, { status: 200 });
