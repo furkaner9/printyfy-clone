@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface WidgetProps {
   label: string;
@@ -9,10 +9,14 @@ interface WidgetProps {
 
 const Widget = ({ label, value }: WidgetProps) => {
   const [displayValue, setDisplayValue] = useState(0);
-  const controls = useAnimation();
 
   useEffect(() => {
-    const duration = 1000; // 1000 ms = 1 saniye
+    if (typeof value !== "number" || value <= 0) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const duration = 1000;
     const stepTime = duration / value;
     let current = 0;
 
@@ -25,12 +29,12 @@ const Widget = ({ label, value }: WidgetProps) => {
       }
     }, stepTime);
 
-    return () => clearInterval(interval); // Cleanup
+    return () => clearInterval(interval);
   }, [value]);
 
   return (
     <div
-      className="border shodow-lg rounded-lg w-full flex flex-col p-8 space-y-7 bg-gradient-to-r
+      className="border shadow-lg rounded-lg w-full flex flex-col p-8 space-y-7 bg-gradient-to-r
      from-slate-800 to-slate-500 text-white transform hover:scale-105 transition-transform duration-500"
     >
       <div className="text-center">
@@ -40,7 +44,7 @@ const Widget = ({ label, value }: WidgetProps) => {
         <motion.p
           className="text-3xl font-bold"
           initial={{ opacity: 0, y: 20 }}
-          animate={controls}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
           {displayValue.toLocaleString()}

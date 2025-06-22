@@ -21,11 +21,12 @@ const DashboardPage = async () => {
     });
 
     const Widgetdata = [
-      { label: "Total Configurations", value: totalConfigurations },
-      { label: "Total Orders", value: totalOrders },
-      { label: "Iyzico Payment", value: iyzicoPayment },
-      { label: "Stripe Payment ", value: stripePayment },
+      { label: "Total Configurations", value: totalConfigurations ?? 0 },
+      { label: "Total Orders", value: totalOrders ?? 0 },
+      { label: "Iyzico Payment", value: iyzicoPayment ?? 0 },
+      { label: "Stripe Payment ", value: stripePayment ?? 0 },
     ];
+    console.log("Widgetdata:", Widgetdata);
 
     return (
       <div className="p-8 space-y-8">
