@@ -17,12 +17,13 @@ import {
 import PhoneModal from "../../_components/Phone/PhoneModal";
 import StatusUpdater from "../../_components/StatusUpdater";
 import MugModal from "../../_components/Mug/MugModal";
+import TshirtModal from "../../_components/Tshirt/TshirtModal";
 
-const MugOrder = async () => {
+const TshirtOrder = async () => {
   const orders = await prismadb.order.findMany({
     where: {
       configuration: {
-        type: "mug",
+        type: "tshirt",
       },
     },
     include: {
@@ -35,7 +36,7 @@ const MugOrder = async () => {
   });
   return (
     <div className="container mx-auto mt-16">
-      <h2 className="text-2xl text-center font-semibold mb-6">Mug Order</h2>
+      <h2 className="text-2xl text-center font-semibold mb-6">Tshirt Order</h2>
       <Accordion
         type="single"
         collapsible
@@ -59,7 +60,8 @@ const MugOrder = async () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-white">Type</TableHead>
-                    <TableHead className="text-white">Mug Colur</TableHead>
+                    <TableHead className="text-white">Color</TableHead>
+                    <TableHead className="text-white">Size</TableHead>
                     <TableHead className="text-white">Base Price</TableHead>
                     <TableHead className="text-white">Total Price</TableHead>
                     <TableHead className="text-white">Payment Type</TableHead>
@@ -71,25 +73,29 @@ const MugOrder = async () => {
                 </TableHeader>
                 <TableBody>
                   <TableRow key={order.id}>
-                    <TableCell className="font-medium">Mug</TableCell>
+                    <TableCell className="font-medium">T-shirt</TableCell>
                     <TableCell>
-                      {order.configuration.mugColor?.toUpperCase()}
+                      {order.configuration.tshirtcolor?.toUpperCase()}
                     </TableCell>
-                    <TableCell className="font-medium">
-                      ${order.configuration.totalPrice}
+                    <TableCell>
+                      {order.configuration.size?.toUpperCase()}
                     </TableCell>
-                    <TableCell className="font-medium">
+
+                    <TableCell className="font-semibold">
                       ${order.configuration.basePrice}
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-semibold">
+                      ${order.configuration.totalPrice}
+                    </TableCell>
+                    <TableCell className="font-semibold">
                       {order.paidType}
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-semibold">
                       {new Date(order.createdAt).toLocaleString()}
                     </TableCell>
                     <TableCell className="font-medium">
-                      <MugModal
-                        mugColor={order.configuration.mugColor}
+                      <TshirtModal
+                        tshirtColor={order.configuration.tshirtcolor}
                         croppedImageUrl={order.configuration.croppedImageUrl}
                       />
                     </TableCell>
@@ -110,4 +116,4 @@ const MugOrder = async () => {
   );
 };
 
-export default MugOrder;
+export default TshirtOrder;

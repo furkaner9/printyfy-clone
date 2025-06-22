@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { HTMLAttributes } from "react";
+
 interface TshirtDesignProps extends HTMLAttributes<HTMLDivElement> {
   imgSrc: string | null;
-  src: string;
+  src: string | null;
 }
 
 const TshirtDesign = ({
@@ -20,22 +21,29 @@ const TshirtDesign = ({
       )}
       {...props}
     >
-      <Image
-        alt=""
-        src={src}
-        width={896}
-        height={1831}
-        className="z-50 select-none pointer-events-none"
-      />
-      <div className="absolute -z-10 inset-0 flex items-center justify-center">
+      {/* Tshirt Template varsa göster */}
+      {src && (
         <Image
-          width={177}
-          height={385}
-          alt=""
-          src={imgSrc || "/phone-template.png"}
-          className="object-cover "
+          alt="Tshirt template"
+          src={src}
+          width={896}
+          height={1831}
+          className="z-50 select-none pointer-events-none"
         />
-      </div>
+      )}
+
+      {/* Kullanıcı görseli varsa göster */}
+      {imgSrc && (
+        <div className="absolute -z-10 inset-0 flex items-center justify-center">
+          <Image
+            width={177}
+            height={385}
+            alt="User design"
+            src={imgSrc}
+            className="object-cover"
+          />
+        </div>
+      )}
     </div>
   );
 };
