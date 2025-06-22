@@ -15,7 +15,7 @@ const DashboardPage = async () => {
     });
     const stripePayment = await prismadb.order.count({
       where: {
-        paidType: "stripe",
+        paidType: "Stripe",
         isPaid: true,
       },
     });
