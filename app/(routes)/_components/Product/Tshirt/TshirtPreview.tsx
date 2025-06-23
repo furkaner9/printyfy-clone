@@ -39,84 +39,90 @@ const TshirtPreview = ({ configurations }: TshirtPreviewProps) => {
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
 
   useEffect(() => {
-    // Sayfa yüklendiğinde konfeti göstermek için
     setShowConfetti(true);
   }, []);
 
-  // Konfeti için yapılandırma
-  const confettiConfig = {
-    angle: 90,
-    spread: 360,
-    startVelocity: 40,
-    elementCount: 70,
-    decay: 0.9,
-  };
-
   return (
     <>
-      <Confetti active={showConfetti} config={confettiConfig} />
+      <div className="pointer-events-none select-none absolute inset-0 overflow-hidden flex justify-center">
+        <Confetti
+          active={showConfetti}
+          config={{ elementCount: 600, spread: 150 }}
+        />
+      </div>
 
-      <div className="container mx-auto px-4 mt-20 mb-20 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Sol taraf: Tişört önizleme alanı */}
-          <div className="col-span-2 flex justify-center items-center h-[600px] bg-slate-100 border border-gray-300 rounded-lg p-6 relative">
-            <div className="relative w-full h-full flex items-center justify-center">
-              <TshirtDesign
-                src={`/tshirt-base-${tshirtcolor}.png`} // Örnek yol: Tişört rengine göre değişen bir görsel
-                imgSrc={croppedImageUrl}
-                // width ve height prop'larını TshirtDesign component'iniz bekliyorsa ekleyin.
-                // Eğer TshirtDesign sabit boyutlar kullanıyorsa, bunları göndermenize gerek yok.
-              />
+      <div className="container mx-auto mt-20 flex flex-col items-center md:grid text-sm md:grid-cols-12 md:gap-8">
+        <div className="md:col-span-4">
+          <TshirtDesign
+            src={color ?? null}
+            imgSrc={configurations.croppedImageUrl}
+          />
+        </div>
+
+        <div className="md:col-span-8">
+          {/* Features + Materials */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-b py-6">
+            <div>
+              <p className="font-semibold text-xl text-zinc-950">Features</p>
+              <ol className="mt-3 text-zinc-700 list-disc list-inside">
+                <li>Supports wireless charging</li>
+                <li>Shock-absorbing TPU material</li>
+                <li>Eco-friendly packaging</li>
+                <li>5-years print warranty</li>
+              </ol>
+            </div>
+
+            <div>
+              <p className="font-semibold text-xl text-zinc-950">Materials</p>
+              <ol className="mt-3 text-zinc-700 list-disc list-inside">
+                <li>Durable, high-quality material</li>
+                <li>Resistant to scratches and fingerprints</li>
+              </ol>
             </div>
           </div>
 
-          {/* Sağ taraf: Sipariş Özeti ve İşlemler */}
-          <div className="h-[600px] bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden">
-            <ScrollArea className="flex-1 overflow-auto">
-              <div className="px-8 py-8">
-                <h2 className="text-2xl font-semibold mb-6">Order summary</h2>
-
-                <div className="flex flex-col gap-4 text-gray-700">
-                  <p>
-                    <strong>Color:</strong> {tshirtcolor}
+          {/* Price Box */}
+          <div className="mt-8">
+            <div className="bg-gray-200 p-5 rounded-lg">
+              <div className="flow-root text-sm gap-y-3">
+                <div className="flex items-center justify-between py-1 mt-2">
+                  <p className="text-gray-700">Base Price</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatPrice(basePrice)}
                   </p>
-                  <p>
-                    <strong>Size:</strong> {size}
+                </div>
+                <div className="flex items-center justify-between py-1 mt-2">
+                  <p className="text-gray-700">Material and Textured Finish</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatPrice((totalPrice ?? 0) - (basePrice ?? 0))}
                   </p>
-                  <p>
-                    <strong>Base Price:</strong> {formatPrice(basePrice)}
-                  </p>
-                  <p>
-                    <strong>Order Total:</strong> {formatPrice(totalPrice)}
+                </div>
+                <div className="my-2 h-px bg-gray-400" />
+                <div className="flex items-center justify-between py-1 mt-2">
+                  <p className="text-gray-700">Total Price</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatPrice(totalPrice)}
                   </p>
                 </div>
               </div>
-            </ScrollArea>
-
-            <div className="border-t border-gray-200 px-8 h-16 bg-white flex items-center justify-end">
-              <div className="w-full flex justify-between items-center">
-                <p className="font-semibold text-lg">
-                  {formatPrice(totalPrice)}
-                </p>
-                <Button
-                  variant="mybutton"
-                  size="sm"
-                  className="w-40"
-                  onClick={() => router.push(`/catalog/${id}/tshirt/checkout`)}
-                >
-                  Checkout
-                  <ArrowRight className="h-4 w-4 ml-1 inline" />
-                </Button>
-              </div>
             </div>
+          </div>
+
+          {/* Checkout */}
+          <div className="mt-8 flex justify-end pb-12 space-x-4">
+            {!isSignedIn || !user ? (
+              <ModalLogin redirectUrl={`/catalog/${id}/phone/preview`} />
+            ) : (
+              <Button
+                onClick={() => router.push(`/catalog/${id}/phone/checkout`)}
+                disabled={!isSignedIn}
+              >
+                Checkout <ArrowRight className="h-4 w-4 ml-2 inline" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
-      {/* ModalLogin component'ini, gerektiğinde gösterilecek şekilde sayfanın en altına ekleyin */}
-      {/* Eğer bir state ile kontrol ediyorsanız: {showLoginModal && <ModalLogin onClose={() => setShowLoginModal(false)} />} */}
-      {/* Şu anki kullanımınızda direkt görünecek mi, yoksa bir state'e mi bağlı, net değil. */}
-      {/* ModalLogin component'inizin nasıl tetiklendiğini kontrol edin. */}
-      {!isSignedIn && <ModalLogin />}
     </>
   );
 };

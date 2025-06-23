@@ -42,21 +42,21 @@ export const services: ServiceProps[] = [
     image: "/services/1.png",
     title: "Higher Profits",
     description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in .",
+      "Maximize your earnings with our streamlined design-to-sell platform. Our tools help reduce production costs and boost your profit margins effortlessly.",
   },
   {
     id: 2,
     image: "/services/2.png",
     title: "Robust Scaling",
     description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in .",
+      "Whether you're just starting out or managing a large store, our platform grows with you. Easily handle increased demand without sacrificing speed or quality.",
   },
   {
     id: 3,
     image: "/services/3.png",
     title: "Best Selection",
     description:
-      "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in .",
+      "Offer your customers a wide range of high-quality customizable products—from phone cases to apparel—designed to fit every style and preference.",
   },
 ];
 

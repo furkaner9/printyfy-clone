@@ -50,8 +50,8 @@ const TshirtDesignConfig = ({
   });
 
   const [renderedPosition, setRenderedPosition] = useState({
-    x: 100,
-    y: 100,
+    x: 150,
+    y: 205,
   });
 
   const tshirtRef = useRef<HTMLDivElement>(null);
@@ -200,13 +200,13 @@ const TshirtDesignConfig = ({
         {/* containerRef'in buraya atanmış olduğundan emin olun */}
         <div
           ref={containerRef}
-          className="col-span-2 flex justify-center items-center h-[600px] bg-slate-100 border border-gray-300 rounded-lg p-6 relative"
+          className="col-span-2 flex justify-center items-center h-[600px] bg-gray-300 border border-gray-300 rounded-lg p-6 relative"
         >
           <div className="relative w-full h-full flex items-center justify-center">
             {/* tshirtRef'in buraya atanmış olduğundan emin olun */}
             <div
               ref={tshirtRef}
-              className="relative w-[300px] aspect-[770/1600]"
+              className="relative w-[300px] aspect-[770/1600] "
             >
               <AspectRatio
                 ratio={770 / 1600}
@@ -223,37 +223,20 @@ const TshirtDesignConfig = ({
 
               <Rnd
                 bounds="parent"
-                default={{
-                  x: 0,
-                  y: 0,
-                  height: imageDimensions.height / 4,
-                  width: imageDimensions.width / 4,
-                }}
-                onResizeStop={(e, direction, ref, delta, position) => {
-                  setRenderedDimension({
-                    height: parseInt(ref.style.height),
-                    width: parseInt(ref.style.width),
-                  });
-                  setRenderedPosition(position);
-                }}
-                onDragStop={(e, data) => {
-                  const { x, y } = data;
-                  setRenderedPosition({ x, y });
-                }}
+                size={{ width: 150, height: 280 }}
+                position={{
+                  x: (300 - 150) / 2,
+                  y: ((300 * 1600) / 770 - 280) / 2,
+                }} // Ortalamak için
+                disableDragging
+                enableResizing={false}
                 className="absolute z-30 border-[3px] border-primary"
-                lockAspectRatio
-                resizeHandleComponent={{
-                  bottomRight: <HandleComponent />,
-                  bottomLeft: <HandleComponent />,
-                  topRight: <HandleComponent />,
-                  topLeft: <HandleComponent />,
-                }}
               >
                 <Image
                   src={imageUrl}
                   fill
                   alt="your image"
-                  className="pointer-events-none"
+                  className="pointer-events-none object-cover"
                 />
               </Rnd>
 

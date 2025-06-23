@@ -34,7 +34,7 @@ const TshirtDesign = ({
 
       {/* Kullanıcı görseli varsa göster */}
       {imgSrc && (
-        <div className="absolute -z-10 inset-0 flex items-center justify-center">
+        <div className="absolute z-10 inset-0 flex items-center justify-center">
           <Image
             width={177}
             height={385}

@@ -14,10 +14,10 @@ const Footer = () => {
             Have Questions About Printy?
           </h2>
           <p className="font-light">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et tempore
-            distinctio, voluptatem doloremque eaque esse veniam ipsam obcaecati
-            unde enim culpa aut adipisci voluptatibus ipsa at omnis, vitae
-            officiis facilis.
+            We're here to help! Whether you're customizing a phone case, mug, or
+            t-shirt, our support team is ready to assist with your order,
+            payment, or design process. Need quick answers? Check out our FAQ or
+            contact us directly!
           </p>
           <Button variant="default">Help Center</Button>
         </div>
